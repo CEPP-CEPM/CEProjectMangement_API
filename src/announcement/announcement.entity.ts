@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('announcements')
 
-export class PostEntity {
+export class AnnouncementEntity {
     @PrimaryGeneratedColumn()
     announcement_id: number
 
@@ -11,4 +11,7 @@ export class PostEntity {
 
     @Column({default: ''})
     description: string
+
+    @Column()
+    createAt: Date
 }

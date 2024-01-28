@@ -3,9 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostController } from './post/controllers/post.controller';
-import { PostModule } from './post/post.module';
-import { PostService } from './post/services/post.service';
+import { PostModule } from './announcement/announcement.module';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }),
