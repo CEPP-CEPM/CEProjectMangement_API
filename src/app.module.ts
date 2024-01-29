@@ -4,8 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostModule } from './announcement/announcement.module';
-import { TagController } from './tag/tag.controller';
-import { TagService } from './tag/tag.service';
 import { TagModule } from './tag/tag.module';
 
 @Module({
@@ -23,7 +21,7 @@ import { TagModule } from './tag/tag.module';
       PostModule,
       TagModule,
   ],
-  controllers: [AppController, TagController],
-  providers: [AppService, TagService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
