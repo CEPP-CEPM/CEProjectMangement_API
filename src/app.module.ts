@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostModule } from './announcement/announcement.module';
+import { TagController } from './tag/tag.controller';
+import { TagService } from './tag/tag.service';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }),
@@ -18,8 +21,9 @@ import { PostModule } from './announcement/announcement.module';
       synchronize: true,
     }),
       PostModule,
+      TagModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, TagController],
+  providers: [AppService, TagService],
 })
 export class AppModule {}

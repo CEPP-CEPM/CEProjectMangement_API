@@ -11,7 +11,7 @@ export class AnnouncementController {
     constructor(private readonly announcementService: AnnouncementService){}
 
     @Get()
-    async getAllPost() {
+    async findAllAnnouncement() {
         return await this.announcementService.findAllAnnouncement()
     }
 
