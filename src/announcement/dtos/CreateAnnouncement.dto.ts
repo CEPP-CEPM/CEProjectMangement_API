@@ -1,6 +1,6 @@
-import { IsDateString, IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 
-export class AnnouncementDto {
+export class CreateAnnouncementDto {
     announcement_id: number;
 
     @IsNotEmpty()
@@ -9,7 +9,7 @@ export class AnnouncementDto {
     @IsNotEmpty()
     description: string;
 
-    @IsNotEmpty()
-    @IsDateString()
     createAt: Date;
+
+    modifyAt: Date;
 }
