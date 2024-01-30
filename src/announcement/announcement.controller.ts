@@ -21,7 +21,7 @@ export class AnnouncementController {
     }
 
     @Put(':id')
-    async updateAnnouncement(@Param('id') id: number, @Body() updateAnnouncement: UpdateAnnouncementDto) {
+    async updateAnnouncement(@Param('id') id: string, @Body() updateAnnouncement: UpdateAnnouncementDto) {
         return await this.announcementService.updateAnnouncement(id, updateAnnouncement)
     }
 }

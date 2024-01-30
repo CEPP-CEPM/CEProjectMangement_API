@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
 import { AnnouncementController } from './announcement.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AnnouncementEntity } from './announcement.entity';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AnnouncementEntity])],
+  imports: [PrismaModule],
   providers: [AnnouncementService],
   controllers: [AnnouncementController],
 })

@@ -10,23 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  posts Post[]
-}
-
-model Post {
-  id        Int      @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Announcements {
+  id            String       @id @default(dbgenerated("gen_random_uuid()"))
+  title         String
+  description   String
+  createAt      DateTime  @default(now())
+  modifyAt      DateTime  @updatedAt()
 }
 
 model Tags {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(dbgenerated("gen_random_uuid()"))
   tagname   String
 }

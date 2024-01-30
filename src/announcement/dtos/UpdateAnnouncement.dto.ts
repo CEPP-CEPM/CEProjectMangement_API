@@ -6,6 +6,4 @@ export class UpdateAnnouncementDto {
 
     @IsNotEmpty()
     description: string;
-
-    modifyAt : Date;
 }

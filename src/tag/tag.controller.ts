@@ -12,12 +12,11 @@ export class TagController {
 
     @Get()
     async findAllTag() {
-        
+        return await this.tagService.findAll()
     } 
 
     @Post()
     async createTag(@Body() createTagDto: CreateTagDto) {
-        // return await this.tagService.create(createTagDto)
         return await this.tagService.create(createTagDto)
     }
 }

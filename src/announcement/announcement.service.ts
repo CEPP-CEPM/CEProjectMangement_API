@@ -1,27 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AnnouncementEntity } from './announcement.entity';
-import { Repository } from 'typeorm';
-import { CreateAnnouncementDto } from './dtos/CreateAnnouncement.dto';
-import { UpdateAnnouncementDto } from './dtos/UpdateAnnouncement.dto';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AnnouncementService {
 
     constructor(
-        @InjectRepository(AnnouncementEntity)
-        private readonly postRepository: Repository<AnnouncementEntity>,
+        private readonly prismaService: PrismaService
     ) {}
 
-    async findAllAnnouncement(): Promise<CreateAnnouncementDto[]> {
-        return await this.postRepository.find()
+    async findAllAnnouncement() {
+        return await this.prismaService.announcements.findMany()
     }
 
-    async createAnnouncement(createAnnouncementDto: CreateAnnouncementDto) {
-        return await this.postRepository.save(createAnnouncementDto)
+    async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput) {
+        return await this.prismaService.announcements.create({data: createAnnouncementDto})
     }
 
-    async updateAnnouncement(id: number,updateAnnouncementDto: UpdateAnnouncementDto) {
-        return await this.postRepository.update(id, updateAnnouncementDto)
+    async updateAnnouncement(id: string,updateAnnouncementDto: Prisma.AnnouncementsCreateInput) {
+        return await this.prismaService.announcements.update({data: updateAnnouncementDto, where: {id: id}})
     }
 }
