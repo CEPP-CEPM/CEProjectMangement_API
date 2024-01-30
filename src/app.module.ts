@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostModule } from './announcement/announcement.module';
 import { TagModule } from './tag/tag.module';
+import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }),
@@ -20,6 +22,7 @@ import { TagModule } from './tag/tag.module';
     }),
       PostModule,
       TagModule,
+      PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

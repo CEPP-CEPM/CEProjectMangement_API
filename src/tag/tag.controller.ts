@@ -5,7 +5,10 @@ import { TagService } from './tag.service';
 @Controller('tag')
 export class TagController {
 
-    constructor(private readonly tagService: TagService) {}
+    constructor(
+        private readonly tagService: TagService,
+        
+    ) {}
 
     @Get()
     async findAllTag() {
@@ -14,6 +17,7 @@ export class TagController {
 
     @Post()
     async createTag(@Body() createTagDto: CreateTagDto) {
+        // return await this.tagService.create(createTagDto)
         return await this.tagService.create(createTagDto)
     }
 }

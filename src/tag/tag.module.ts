@@ -3,9 +3,10 @@ import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagEntity } from './tag.entity';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([TagEntity])],
+    imports: [PrismaModule],
     providers: [TagService],
     controllers: [TagController],
 })
