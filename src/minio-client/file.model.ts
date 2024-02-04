@@ -24,4 +24,5 @@ export interface BufferedFile {
   
   export type AppMimeType =
     | 'image/png'
+    | 'image/jpg'
     | 'image/jpeg';

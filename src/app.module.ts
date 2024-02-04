@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 // import { TagModule } from './tag/tag.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MinioClientModule } from './minio-client/minio-client.module';
       // TagModule,
       PrismaModule,
       MinioClientModule,
+      FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
