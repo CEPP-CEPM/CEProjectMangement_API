@@ -128,7 +128,7 @@ model AssignmentSubmit {
   groupId               String                  @unique
   Assignments           Assignments             @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   assignmentId          String                  
-  status                AssignmentStatus        @default(SEND)
+  status                AssignmentStatus        @default(NOTSEND)
   createAt              DateTime                @default(now())
   modifyAt              DateTime                @updatedAt
   AssignmentSubmitFiles AssignmentSubmitFiles[]
@@ -168,7 +168,7 @@ model Groups {
   Topics           Topics             @relation(fields: [topicId], references: [id], onDelete: Cascade)
   topicId          String             @unique
   UserGroups       UserGroups[]
-  GroupInvites     GroupInvites?
+  GroupInvites     GroupInvites?      
   AssignmentGroups AssignmentGroups[]
   AssignmentSubmit AssignmentSubmit?
 }
