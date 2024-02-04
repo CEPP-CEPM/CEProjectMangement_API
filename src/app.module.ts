@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { PostModule } from './announcement/announcement.module';
 import { TagModule } from './tag/tag.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }),
@@ -22,6 +24,7 @@ import { PrismaModule } from './prisma/prisma.module';
       PostModule,
       TagModule,
       PrismaModule,
+      MinioClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
