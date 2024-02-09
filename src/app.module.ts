@@ -9,7 +9,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { UsersModule } from './users/users.module';
       MinioClientModule,
       FileUploadModule,
       AuthModule,
-      UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

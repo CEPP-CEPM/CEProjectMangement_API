@@ -34,7 +34,7 @@ enum CommentAssignmentType {
 model Users {
   id           String         @id @default(dbgenerated("gen_random_uuid()"))
   email        String         @unique
-  image        String
+  // image        String
   name         String?        @db.VarChar(50)
   lastname     String?        @db.VarChar(50)
   tel          String?        @db.VarChar(10)
