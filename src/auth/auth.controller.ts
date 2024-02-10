@@ -13,7 +13,7 @@ export class AuthController {
 
   @Post('login')
   @ApiOkResponse({ type: JwtToken })
-  login(@Body() { email, password }: LoginDto) {
-    return this.authService.login(email, password);
+  login(@Body() { credential }: LoginDto) {
+    return this.authService.login({credential});
   }
 }
