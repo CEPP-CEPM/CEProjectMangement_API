@@ -14,7 +14,12 @@ export class AnnouncementController {
 
     @Get()
     async findAllAnnouncement() {
-        // return await this.announcementService.findAllAnnouncement()
+        return await this.announcementService.findAllAnnouncement()
+    }
+
+    @Get(':id')
+    async findOneAnnouncement(@Param('id') id: string) {
+        return await this.announcementService.findOneAnnouncement(id)
     }
 
     @Post()

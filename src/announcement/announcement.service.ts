@@ -3,7 +3,6 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
-import { CreateAnnouncementDto } from './dto/CreateAnnouncement.dto';
 
 @Injectable()
 export class AnnouncementService {
@@ -15,6 +14,12 @@ export class AnnouncementService {
 
     async findAllAnnouncement() {
         return await this.prismaService.announcements.findMany()
+    }
+
+    async findOneAnnouncement(id: string) {
+        return await this.prismaService.announcements.findUnique({where : {
+            id
+        }})
     }
 
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
