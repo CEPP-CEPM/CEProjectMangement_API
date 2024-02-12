@@ -18,6 +18,7 @@ export class AnnouncementService {
     }
 
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
+        console.log(files)
         // return await this.prismaService.announcements.create({data: createAnnouncementDto})
         const announcement = await this.prismaService.announcements.create({
             data: {
@@ -50,8 +51,37 @@ export class AnnouncementService {
         return announcement;
     }
 
-    async updateAnnouncement(id: string,updateAnnouncementDto: Prisma.AnnouncementsCreateInput) {
-        return await this.prismaService.announcements.update({data: updateAnnouncementDto, where: {id: id}})
+    async updateAnnouncement(id: string, updateAnnouncementDto: Prisma.AnnouncementsUpdateInput, files: BufferedFile[]) {
+        // console.log(files)
+        // console.log(id);
+        // console.log(updateAnnouncementDto)
+        const updateAnnouncement = await this.prismaService.announcements.update({
+            where: { id: id },
+            data: {
+                title: updateAnnouncementDto.title,
+                description: updateAnnouncementDto.description,
+                // Advisor: { connect: { id: user.id } },
+            },
+            include: {
+                // Advisor: true,
+                AnnouncementFiles: true,
+            },
+        });
+
+        const uploadFiles = await this.uploadFiles(files);
+        await Promise.all(
+            uploadFiles.map(async (fileuploadFile) => {
+                const announcementFile = await this.prismaService.announcementFiles.create({
+                    data: {
+                        bucket: fileuploadFile.bucketName,
+                        name: fileuploadFile.filename,
+                        Announcements: { connect: { id: id } },
+                    },
+                });
+                return announcementFile;
+            }),
+        );
+        return updateAnnouncement;
     }
 
     private async uploadFiles(files: BufferedFile[]) {

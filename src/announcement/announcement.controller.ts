@@ -24,7 +24,11 @@ export class AnnouncementController {
     }
 
     @Put(':id')
-    async updateAnnouncement(@Param('id') id: string, @Body() updateAnnouncement: UpdateAnnouncementDto) {
-        // return await this.announcementService.updateAnnouncement(id, updateAnnouncement)
+    @UseInterceptors(FilesInterceptor('files'))
+    async updateAnnouncement(@Param('id') id: string, @UploadedFiles() files: BufferedFile[], @Body() updateAnnouncement: UpdateAnnouncementDto) {
+        console.log(files)
+        console.log(updateAnnouncement);
+        
+        return await this.announcementService.updateAnnouncement(id, updateAnnouncement, files)
     }
 }
