@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
 import { ConfigModule } from '@nestjs/config';
 import { AnnouncementModule } from './announcement/announcement.module';
+import { AssignmentModule } from './assignment/assignment.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
       MinioClientModule,
       FileUploadModule,
       AuthModule,
+      AssignmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,9 +17,7 @@ export class AnnouncementService {
     }
 
     async findOneAnnouncement(id: string) {
-        return await this.prismaService.announcements.findUnique({where : {
-            id
-        }})
+        return await this.prismaService.announcements.findUnique({where : {id: id}})
     }
 
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
