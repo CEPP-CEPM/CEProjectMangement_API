@@ -14,7 +14,7 @@ export class AnnouncementController {
 
     @Get()
     async findAllAnnouncement() {
-        return await this.announcementService.findAllAnnouncement()
+        // return await this.announcementService.findAllAnnouncement()
     }
 
     @Post()
