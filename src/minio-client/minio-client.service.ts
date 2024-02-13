@@ -70,12 +70,6 @@ export class MinioClientService {
   }
 
   async delete(objetName: string, baseBucket: string = this.baseBucket) {
-    this.client.removeObject(baseBucket, objetName, (err) => {
-      if (err)
-        throw new HttpException(
-          err,
-          HttpStatus.BAD_REQUEST,
-        );
-    });
+    this.client.removeObject(baseBucket, objetName);
   }
 }

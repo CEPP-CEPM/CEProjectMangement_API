@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { deleteFiles } from 'src/interfaces/deleteFiles.interface';
 
 @Injectable()
 export class AssignmentService {
@@ -78,6 +79,27 @@ export class AssignmentService {
             })
         )
         return updateAssignment
+    }
+
+    async deleteById(id: string) {
+
+        const findAllAssignmentFiles = await this.prismaService.assignmentFiles.findMany({
+            where : { assignmentId: id }
+        })
+        await this.deleteFiles(findAllAssignmentFiles)
+        
+        return await this.prismaService.assignments.delete({ where : { id: id}})
+    }
+
+    private async deleteFiles(files: deleteFiles[]) {
+        await Promise.all(
+            files.map(async (file) => {
+                await this.minioClientService.delete(
+                    file.name,
+                    file.bucket
+                )
+            })
+        )
     }
 
     private async uploadFiles(files: BufferedFile[]) {

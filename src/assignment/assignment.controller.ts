@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AssignmentService } from './assignment.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -32,5 +32,10 @@ export class AssignmentController {
     @UseInterceptors(FilesInterceptor('files'))
     async update(@Param('id') id: string, @UploadedFiles() files: BufferedFile[], @Body() updateAssignmentDto: UpdateAssignmentDto) {
         return await this.assignmentService.update(id, updateAssignmentDto, files)
+    }
+
+    @Delete(':id')
+    async deleteById(@Param('id') id: string) {
+        return await this.assignmentService.deleteById(id)
     }
 }

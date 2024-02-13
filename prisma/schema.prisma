@@ -149,7 +149,7 @@ model Assignments {
 
 model AssignmentFiles {
   id           String      @id @default(dbgenerated("gen_random_uuid()"))
-  Assignments  Assignments @relation(fields: [assignmentId], references: [id])
+  Assignments  Assignments @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   assignmentId String
   name         String
   bucket       String
