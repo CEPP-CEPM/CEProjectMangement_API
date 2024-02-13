@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
+import { deleteAnnouncementsFiles } from 'src/interfaces/deleteFiles.interface';
 
 @Injectable()
 export class AnnouncementService {
@@ -17,7 +18,14 @@ export class AnnouncementService {
     }
 
     async findOneAnnouncement(id: string) {
-        return await this.prismaService.announcements.findUnique({where : {id: id}})
+        return await this.prismaService.announcements.findUnique({
+            where : {
+                id: id
+            },
+            include : {
+                AnnouncementFiles: true
+            }
+        })
     }
 
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
@@ -85,6 +93,26 @@ export class AnnouncementService {
             }),
         );
         return updateAnnouncement;
+    }
+
+    async deleteById(id: string) {
+        const findAllAnnouncementFiles = await this.prismaService.announcementFiles.findMany({
+            where : { announcementId: id }
+        })
+        await this.deleteFiles(findAllAnnouncementFiles)
+        
+        return await this.prismaService.announcements.delete({ where : { id: id}})
+    }
+
+    private async deleteFiles(files: deleteAnnouncementsFiles[]) {
+        await Promise.all(
+            files.map(async (file) => {
+                await this.minioClientService.delete(
+                    file.name,
+                    file.bucket
+                )
+            })
+        )
     }
 
     private async uploadFiles(files: BufferedFile[]) {
