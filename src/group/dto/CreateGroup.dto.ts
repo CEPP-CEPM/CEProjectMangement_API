@@ -5,4 +5,8 @@ export class CreateGroupDto {
     @ApiProperty()
     @IsNotEmpty()
     topic: string
+
+    @ApiProperty()
+    @IsNotEmpty()
+    tag: string
 }

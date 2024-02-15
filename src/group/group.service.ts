@@ -15,10 +15,19 @@ export class GroupService {
         return await this.prismaService.groups.findMany()
     }
 
+    async findByGroupId(id: string) {
+        return await this.prismaService.groups.findUnique({
+            where: {
+                id: id
+            }
+        })
+    }
+
     async create(createGroupDto: Prisma.GroupsCreateInput) {
         const group = await this.prismaService.groups.create({
             data: {
-                topic: createGroupDto.topic
+                topic: createGroupDto.topic,
+                tag: createGroupDto.tag
             }
         })
         return group

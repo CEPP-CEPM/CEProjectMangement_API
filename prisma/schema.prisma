@@ -169,7 +169,8 @@ model Groups {
   id               String             @id @default(dbgenerated("gen_random_uuid()"))
   // Users            Users              @relation(fields: [createBy], references: [id], onDelete: Cascade)
   // createBy         String             @unique
-  topic            String             
+  topic            String
+  tag              String       
   // Topics           Topics             @relation(fields: [topicId], references: [id], onDelete: Cascade)
   // topicId          String             @unique
   UserGroups       UserGroups[]

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
@@ -15,7 +15,12 @@ export class GroupController {
     }
 
     @Get(':groupId')
-    async findByGroupId() {
+    async findByGroupId(@Param('groupId') groupId: string) {
+        return await this.groupService.findByGroupId(groupId)
+    }
+
+    @Get('advisor/:advisorId')
+    async findByAdvisorId() {
 
     }
 
