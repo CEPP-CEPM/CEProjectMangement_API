@@ -33,7 +33,7 @@ model Users {
   tel          String?        @db.VarChar(10)
   role         Role           @default(STUDENT)
 
-  Groups       Groups?
+  // Groups       Groups?
 
   UserGroups          UserGroups?
   // Score        Score[]
@@ -48,14 +48,14 @@ model Users {
 //   Topics          Topics[]
 // }
 
-model Topics {
-  id           String         @id @default(dbgenerated("gen_random_uuid()"))
+// model Topics {
+//   id           String         @id @default(dbgenerated("gen_random_uuid()"))
   // Tags         Tags           @relation(fields: [tagId], references: [id], onDelete: Cascade)
   // tagId        String
-  name         String
-  description  String
-  Groups       Groups?
-}
+  // name         String
+  // description  String
+  // Groups       Groups?
+// }
 
 model UserGroups {
   id      String @id @default(dbgenerated("gen_random_uuid()"))
@@ -65,13 +65,13 @@ model UserGroups {
   userId  String @unique
 }
 
-model GroupInvites {
-  id      String   @id @default(dbgenerated("gen_random_uuid()"))
-  code    String   @unique @default(dbgenerated("gen_random_uuid()"))
-  status  Boolean  @default(true)
-  Groups  Groups   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId String   @unique
-}
+// model GroupInvites {
+//   id      String   @id @default(dbgenerated("gen_random_uuid()"))
+//   code    String   @unique @default(dbgenerated("gen_random_uuid()"))
+//   status  Boolean  @default(true)
+//   Groups  Groups   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+//   groupId String   @unique
+// }
 
 model Announcements {
   id                  String                @id @default(dbgenerated("gen_random_uuid()"))
@@ -167,12 +167,13 @@ model AnnouncementFiles {
 
 model Groups {
   id               String             @id @default(dbgenerated("gen_random_uuid()"))
-  Users            Users              @relation(fields: [createBy], references: [id], onDelete: Cascade)
-  createBy         String             @unique
-  Topics           Topics             @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  topicId          String             @unique
+  // Users            Users              @relation(fields: [createBy], references: [id], onDelete: Cascade)
+  // createBy         String             @unique
+  topic            String             
+  // Topics           Topics             @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  // topicId          String             @unique
   UserGroups       UserGroups[]
-  GroupInvites     GroupInvites?      
+  
   // AssignmentGroups AssignmentGroups[]
   // AssignmentSubmit AssignmentSubmit?
 }

@@ -22,6 +22,11 @@ export class AssignmentController {
         return await this.assignmentService.findOne(id)
     }
 
+    @Get('student/:id')
+    async findByStd() {
+
+    }
+
     @Post()
     @UseInterceptors(FilesInterceptor('files'))
     async create(@UploadedFiles() files: BufferedFile[], @Body() createAssignmentDto: CreateAssignmentDto) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
 import { CreateAnnouncementDto } from './dto/CreateAnnouncement.dto';
 import { UpdateAnnouncementDto } from './dto/UpdateAnnouncement.dto';
@@ -31,9 +31,11 @@ export class AnnouncementController {
     @Put(':id')
     @UseInterceptors(FilesInterceptor('files'))
     async updateAnnouncement(@Param('id') id: string, @UploadedFiles() files: BufferedFile[], @Body() updateAnnouncement: UpdateAnnouncementDto) {
-        console.log(files)
-        console.log(updateAnnouncement);
-        
         return await this.announcementService.updateAnnouncement(id, updateAnnouncement, files)
+    }
+
+    @Delete(':id')
+    async deleteById(@Param('id') id: string) {
+        return await this.announcementService.deleteById(id)
     }
 }

@@ -10,6 +10,9 @@ import configuration from './config/configuration';
 import { ConfigModule } from '@nestjs/config';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AssignmentModule } from './assignment/assignment.module';
+import { GroupService } from './group/group.service';
+import { GroupController } from './group/group.controller';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -21,8 +24,9 @@ import { AssignmentModule } from './assignment/assignment.module';
       FileUploadModule,
       AuthModule,
       AssignmentModule,
+      GroupModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, GroupController],
+  providers: [AppService, GroupService],
 })
 export class AppModule {}

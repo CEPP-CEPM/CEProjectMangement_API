@@ -45,7 +45,6 @@ export class AuthService {
     }
 
     async login(loginDto : LoginDto) {
-
         const token = await this.verifyToken(loginDto.credential);
         const email = token.getPayload().email;
         // Step 1: Fetch a user with the given email
