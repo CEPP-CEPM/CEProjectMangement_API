@@ -58,11 +58,12 @@ model Users {
 // }
 
 model UserGroups {
-  id      String @id @default(dbgenerated("gen_random_uuid()"))
-  Groups  Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId String
-  Users   Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String @unique
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  Groups      Groups    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String
+  Users       Users     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId   String    @unique
+  join        Boolean   @default(false) 
 }
 
 // model GroupInvites {
@@ -75,8 +76,8 @@ model UserGroups {
 
 model Announcements {
   id                  String                @id @default(dbgenerated("gen_random_uuid()"))
-  // Advisor             Users                 @relation(fields: [advisorId], references: [id], onDelete: Cascade)
-  // advisorId           String
+  // Proctor            Users                 @relation(fields: [proctorId], references: [id], onDelete: Cascade)
+  // proctorId           String
   title               String
   description         String
   createAt            DateTime              @default(now())
@@ -102,6 +103,7 @@ model Assignments {
   description        String
   createAt           DateTime             @default(now())
   dueAt              DateTime
+  modifyAt            DateTime            @updatedAt()
 
   AssignmentFiles    AssignmentFiles[]
   // Score              Score[]
@@ -177,4 +179,11 @@ model Groups {
   
   // AssignmentGroups AssignmentGroups[]
   // AssignmentSubmit AssignmentSubmit?
+}
+
+model AssignmentGrade {
+  id     String @id @default(dbgenerated("gen_random_uuid()"))
+  score  Float
+  // Users  Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // userId String @unique
 }

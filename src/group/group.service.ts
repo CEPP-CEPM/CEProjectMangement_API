@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { MinioClientService } from '../minio-client/minio-client.service';
+import { CreateGroupDto } from './dto/CreateGroup.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -8,7 +8,6 @@ export class GroupService {
 
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly minioClientService: MinioClientService
     ) {}
 
     async findAll() {
@@ -23,13 +22,34 @@ export class GroupService {
         })
     }
 
-    async create(createGroupDto: Prisma.GroupsCreateInput) {
+    async create(createGroupDto: CreateGroupDto) {
         const group = await this.prismaService.groups.create({
             data: {
                 topic: createGroupDto.topic,
-                tag: createGroupDto.tag
+                tag: createGroupDto.tag,
+            },
+            include: {
+                UserGroups: true
             }
         })
+
+        await Promise.all(
+            createGroupDto.userGroup.map(async (email) => {
+                const userId = await this.prismaService.users.findUnique({where: {email: email}})
+                
+                const userGroup = await this.prismaService.userGroups.create({
+                    data: {
+                        Users: {
+                            connect: {id: userId.id}
+                        },
+                        Groups: {
+                            connect: {id: group.id}
+                        }
+                    }
+                })
+                return userGroup
+            })
+        )
         return group
     }
 }

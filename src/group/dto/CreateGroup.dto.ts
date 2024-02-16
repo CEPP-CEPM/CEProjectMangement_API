@@ -9,4 +9,8 @@ export class CreateGroupDto {
     @ApiProperty()
     @IsNotEmpty()
     tag: string
+
+    @ApiProperty()
+    @IsNotEmpty()
+    userGroup: string[]
 }
