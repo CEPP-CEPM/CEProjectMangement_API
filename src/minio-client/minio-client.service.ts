@@ -64,6 +64,8 @@ export class MinioClientService {
 
     return {
       url: `${config.MINIO_ENDPOINT}:${config.MINIO_PORT}/${config.MINIO_BUCKET}/${filename}`,
+      bucketName: baseBucket,
+      filename: fileName,
     };
   }
 
