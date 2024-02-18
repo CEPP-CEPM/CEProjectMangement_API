@@ -21,7 +21,7 @@ export class GroupController {
 
     @Get('advisor/:advisorId')
     async findByAdvisorId() {
-
+        
     }
 
     @Post()

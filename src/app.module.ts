@@ -13,6 +13,9 @@ import { AssignmentModule } from './assignment/assignment.module';
 import { GroupService } from './group/group.service';
 import { GroupController } from './group/group.controller';
 import { GroupModule } from './group/group.module';
+import { UserGroupModule } from './user-group/user-group.module';
+import { UserGroupService } from './user-group/user-group.service';
+import { UserGroupController } from './user-group/user-group.controller';
 
 @Module({
   imports: [
@@ -25,8 +28,9 @@ import { GroupModule } from './group/group.module';
       AuthModule,
       AssignmentModule,
       GroupModule,
+      UserGroupModule,
   ],
-  controllers: [AppController, GroupController],
-  providers: [AppService, GroupService],
+  controllers: [AppController, GroupController, UserGroupController],
+  providers: [AppService, GroupService, UserGroupService],
 })
 export class AppModule {}
