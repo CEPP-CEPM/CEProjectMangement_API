@@ -51,4 +51,10 @@ export class GroupService {
         )
         return group
     }
+
+    async update(id: string, createGroupDto: CreateGroupDto) {
+        const group = await this.prismaService.groups.findUnique({where: {id: id}})
+
+        // const userGroup = await
+    }
 }

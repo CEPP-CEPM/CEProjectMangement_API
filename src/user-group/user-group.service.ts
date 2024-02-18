@@ -27,4 +27,16 @@ export class UserGroupService {
             }
         })
     }
+
+    async update(id: string, status: boolean) {
+        const updateStatus = await this.prismaService.userGroups.update({
+            where: {
+                id: id,
+            },
+            data: {
+                join: status
+            },
+        })
+        return updateStatus
+    }
 }

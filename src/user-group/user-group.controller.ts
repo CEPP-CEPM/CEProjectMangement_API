@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserGroupService } from './user-group.service';
 
@@ -21,5 +21,10 @@ export class UserGroupController {
     @Get('group/:groupId')
     async findByGroupId(@Param('groupId') groupId: string) {
         return await this.userGroupService.findByGroupId(groupId)
+    }
+
+    @Put(':id')
+    async updateStatus(@Param('id') id: string, join: boolean) {
+        return await this.userGroupService.update(id, join)
     }
 }
