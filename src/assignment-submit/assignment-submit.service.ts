@@ -27,6 +27,20 @@ export class AssignmentSubmitService {
         })
     }
 
+    async findById(id: string) {
+        try {
+            const assignmentSubmit =
+                await this.prismaService.assignmentSubmit.findUnique({
+                    where: { id: id },
+                    include: { Assignments: true },
+                });
+            if (!assignmentSubmit) throw new NotFoundException();
+            return assignmentSubmit;
+        } catch (err) {
+            return err.response;
+        }
+    }
+
     async createAssignmentSubmit(files: BufferedFile[], createAssignmentSubmitDto: CreateAssignmentSubmitDto, user: Users) {
         try {
             const assignment = await this.prismaService.assignments.findUnique({

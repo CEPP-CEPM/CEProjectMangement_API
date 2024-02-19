@@ -13,6 +13,11 @@ export class AssignmentSubmitController {
         private readonly assignmentSubmitService: AssignmentSubmitService,
     ) { }
 
+    @Get(':id')
+    async findById(@Param('id') id: string) {
+        return await this.assignmentSubmitService.findById(id);
+    }
+
     @Post('')
     @UseInterceptors(FilesInterceptor('files'))
     async create(
@@ -40,6 +45,3 @@ export class AssignmentSubmitController {
         return await this.assignmentSubmitService.deleteFile(id, user);
     }
 }
-
-
- 
