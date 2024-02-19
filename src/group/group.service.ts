@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
 
@@ -22,6 +22,25 @@ export class GroupService {
     }
 
     async create(createGroupDto: CreateGroupDto) {
+
+        let alreadyGroup = []
+
+        await Promise.all(
+            createGroupDto.userGroup.map(async (email) => {
+                const user = await this.prismaService.users.findUnique({where: {email: email}})
+                if (await this.prismaService.userGroups.findUnique({where: {studentId: user.id}})) {
+                    alreadyGroup.push(user.email)
+                }
+            })
+        )
+
+        if(alreadyGroup) {
+            throw new HttpException({
+                alreadyGroup: alreadyGroup,
+                // message: `${alreadyGroup}`
+        }, HttpStatus.BAD_REQUEST)
+        }
+
         const group = await this.prismaService.groups.create({
             data: {
                 topic: createGroupDto.topic,
@@ -35,7 +54,6 @@ export class GroupService {
         await Promise.all(
             createGroupDto.userGroup.map(async (email) => {
                 const userId = await this.prismaService.users.findUnique({where: {email: email}})
-                
                 const userGroup = await this.prismaService.userGroups.create({
                     data: {
                         Users: {
