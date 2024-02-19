@@ -29,6 +29,11 @@ enum CommentAssignmentType {
   PUBLIC
 }
 
+model Subject{
+  id  String  @id @default(dbgenerated("gen_random_uuid()"))
+  year Int 
+}
+
 model Users {
   id       String  @id @default(dbgenerated("gen_random_uuid()"))
   email    String  @unique
