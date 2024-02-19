@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
+import { UpdateGroupDto } from './dto/UpdateGroup.dto';
 
 @ApiTags('group')
 @Controller('group')
@@ -30,7 +31,7 @@ export class GroupController {
     }
 
     @Put(':groupId')
-    async update(@Param('groupId') groupId: string, @Body() createGroupDto: CreateGroupDto) {
-        
+    async update(@Param('groupId') groupId: string, @Body() updateGroupDto: UpdateGroupDto) {
+        return await this.groupService.update(groupId, updateGroupDto)
     }
 }

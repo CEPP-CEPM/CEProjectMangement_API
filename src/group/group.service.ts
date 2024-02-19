@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
+import { UpdateGroupDto } from './dto/UpdateGroup.dto';
 
 @Injectable()
 export class GroupService {
@@ -17,6 +18,9 @@ export class GroupService {
         return await this.prismaService.groups.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                UserGroups: true
             }
         })
     }
@@ -70,9 +74,51 @@ export class GroupService {
         return group
     }
 
-    async update(id: string, createGroupDto: CreateGroupDto) {
+    async update(id: string, updateGroupDto: UpdateGroupDto) {
         const group = await this.prismaService.groups.findUnique({where: {id: id}})
 
-        // const userGroup = await
+        if (updateGroupDto.addUsers) {
+            await Promise.all(
+                updateGroupDto.addUsers.map(async (user) => {
+                    const addUserId = await this.prismaService.users.findUnique({where: {email: user}})
+                    console.log(addUserId);
+                    
+                    await this.prismaService.userGroups.create({
+                        data: {
+                            Users: {
+                                connect: {id: addUserId.id}
+                            },
+                            Groups: {
+                                connect: {id: group.id}
+                            }
+                        }
+                    })
+                })
+            )
+        }
+
+        if (updateGroupDto.deleteUsers) {
+            await Promise.all(
+                updateGroupDto.deleteUsers.map(async (user) => {
+                    const deleteUserId = await this.prismaService.users.findUnique({where: {email: user}})
+                    await this.prismaService.userGroups.delete({where: {id: deleteUserId.id}})
+                })
+            )
+        }
+
+
+        const updateGroup = await this.prismaService.groups.update({
+            where: {
+                id: id,
+            },
+            data: {
+                topic: updateGroupDto.topic,
+                tag: updateGroupDto.topic,
+            },
+            include: {
+                UserGroups: true
+            }
+        })
+        return updateGroup
     }
 }
