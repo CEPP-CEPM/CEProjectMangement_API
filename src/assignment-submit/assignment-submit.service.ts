@@ -33,7 +33,7 @@ export class AssignmentSubmitService {
                 where: { id: createAssignmentSubmitDto.assignmentId },
             });
             const userGroup = await this.prismaService.userGroups.findUnique({
-                where: { userId: user.id }
+                where: { studentId: user.id }
             })
             const assignCheck = await this.prismaService.assignmentSubmit.findUnique({
                 where: {
@@ -104,7 +104,7 @@ export class AssignmentSubmitService {
             });
             if (!assignment) throw new NotFoundException();
             const userGroup = await this.prismaService.userGroups.findUnique({
-                where: { userId: user.id },
+                where: { studentId: user.id },
             });
             if (!userGroup) throw new ForbiddenException();
             const assignCheck = await this.prismaService.assignmentSubmit.findUnique({
@@ -155,7 +155,7 @@ export class AssignmentSubmitService {
             });
             if (!assignment) throw new NotFoundException();
             const userGroup = await this.prismaService.userGroups.findUnique({
-                where: { userId: user.id },
+                where: { studentId: user.id },
             });
             if (!userGroup) throw new NotFoundException();
             if (assignment.status !== 'SEND') throw new ForbiddenException();
@@ -177,7 +177,7 @@ export class AssignmentSubmitService {
             if (!file) throw new NotFoundException();
             const group = await this.prismaService.userGroups.findUnique({
                 where: {
-                    userId: user.id,
+                    studentId: user.id,
                     groupId: file.AssignmentSubmit.groupId,
                 },
             });
