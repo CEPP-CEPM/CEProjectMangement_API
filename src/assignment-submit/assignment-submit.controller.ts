@@ -5,6 +5,9 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { CreateAssignmentSubmitDto } from './dto/create-assignmentSubmit.dto';
 import { Users } from '@prisma/client';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
+import { UpdateProtorDto } from './dto/update-assiggnmentSubmit.dto';
 
 @ApiTags('assignment-submit')
 @Controller('assignment-submit')
@@ -12,6 +15,11 @@ export class AssignmentSubmitController {
     constructor(
         private readonly assignmentSubmitService: AssignmentSubmitService,
     ) { }
+
+    @Get()
+    async findAll() {
+        return await this.assignmentSubmitService.findAll()
+    }
 
     @Get(':id')
     async findById(@Param('id') id: string) {
@@ -38,6 +46,18 @@ export class AssignmentSubmitController {
                 user,
             );
         }
+    }
+
+    @Put('/advisor/:id')
+    @Roles(Role.ADVISOR)
+    async updateByAdvisor(
+        @Param('id') id: string,
+        @Body() updateProtorDto: UpdateProtorDto,
+    ) {
+        return await this.assignmentSubmitService.updateByAdvisor(
+            id,
+            updateProtorDto,
+        );
     }
 
     @Delete(':id')

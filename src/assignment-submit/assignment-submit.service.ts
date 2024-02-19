@@ -1,9 +1,10 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, Users } from '@prisma/client';
+import { AssignmentStatus, Prisma, Users } from '@prisma/client';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAssignmentSubmitDto } from './dto/create-assignmentSubmit.dto';
+import { UpdateProtorDto } from './dto/update-assiggnmentSubmit.dto';
 
 @Injectable()
 export class AssignmentSubmitService {
@@ -156,6 +157,32 @@ export class AssignmentSubmitService {
                     });
                 return assignmentSubmit;
             }
+        } catch (err) {
+            return err.response;
+        }
+    }
+
+    async updateByAdvisor(id: string, updateProtorDto: UpdateProtorDto) {
+        try {
+            const assignmentSubmit =
+                await this.prismaService.assignmentSubmit.findUnique({
+                    where: { id: id },
+                });
+            if (assignmentSubmit.status != 'SEND') throw new ForbiddenException();
+            if (updateProtorDto.status == AssignmentStatus.APPROVE) {
+                const submit = await this.prismaService.assignmentSubmit.update({
+                    data: { status: 'APPROVE' },
+                    where: { id: id },
+                });
+                return submit;
+            } else if (updateProtorDto.status == AssignmentStatus.REJECT) {
+                const submit = await this.prismaService.assignmentSubmit.update({
+                    data: { status: 'REJECT' },
+                    where: { id: id },
+                });
+                return submit;
+            }
+            throw new ForbiddenException();
         } catch (err) {
             return err.response;
         }
