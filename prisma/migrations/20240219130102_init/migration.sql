@@ -4,6 +4,9 @@ CREATE TYPE "Role" AS ENUM ('STUDENT', 'ADVISOR', 'PROCTOR');
 -- CreateEnum
 CREATE TYPE "AssignmentStatus" AS ENUM ('NOTSEND', 'SEND', 'TURNINLATE', 'REJECT', 'APPROVE');
 
+-- CreateEnum
+CREATE TYPE "CommentAssignmentType" AS ENUM ('PRIVATE', 'PUBLIC');
+
 -- CreateTable
 CREATE TABLE "Users" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
@@ -20,7 +23,7 @@ CREATE TABLE "Users" (
 CREATE TABLE "UserGroups" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "groupId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
     "join" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "UserGroups_pkey" PRIMARY KEY ("id")
@@ -47,6 +50,29 @@ CREATE TABLE "Assignments" (
     "modifyAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Assignments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AssignmentSubmit" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "groupId" TEXT NOT NULL,
+    "assignmentId" TEXT NOT NULL,
+    "status" "AssignmentStatus" NOT NULL DEFAULT 'NOTSEND',
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifyAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AssignmentSubmit_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AssignmentSubmitFiles" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "assignmentSubmitId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "bucket" TEXT NOT NULL,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AssignmentSubmitFiles_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -92,13 +118,25 @@ CREATE TABLE "AssignmentGrade" (
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserGroups_userId_key" ON "UserGroups"("userId");
+CREATE UNIQUE INDEX "UserGroups_studentId_key" ON "UserGroups"("studentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AssignmentSubmit_groupId_key" ON "AssignmentSubmit"("groupId");
 
 -- AddForeignKey
 ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssignmentSubmit" ADD CONSTRAINT "AssignmentSubmit_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssignmentSubmit" ADD CONSTRAINT "AssignmentSubmit_assignmentId_fkey" FOREIGN KEY ("assignmentId") REFERENCES "Assignments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssignmentSubmitFiles" ADD CONSTRAINT "AssignmentSubmitFiles_assignmentSubmitId_fkey" FOREIGN KEY ("assignmentSubmitId") REFERENCES "AssignmentSubmit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "AssignmentFiles" ADD CONSTRAINT "AssignmentFiles_assignmentId_fkey" FOREIGN KEY ("assignmentId") REFERENCES "Assignments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
