@@ -31,7 +31,7 @@ export class AnnouncementService {
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
         console.log(files);
         
-        if (files.length > 0) {
+        if (files && files.length > 0) {
             console.log("file");
             const announcement = await this.prismaService.announcements.create({
                 data: {
@@ -82,9 +82,6 @@ export class AnnouncementService {
     }
 
     async updateAnnouncement(id: string, updateAnnouncementDto: Prisma.AnnouncementsUpdateInput, files: BufferedFile[]) {
-        // console.log(files)
-        // console.log(id);
-        // console.log(updateAnnouncementDto)
         const updateAnnouncement = await this.prismaService.announcements.update({
             where: { id: id },
             data: {
@@ -98,19 +95,21 @@ export class AnnouncementService {
             },
         });
 
-        const uploadFiles = await this.uploadFiles(files);
-        await Promise.all(
-            uploadFiles.map(async (fileuploadFile) => {
-                const announcementFile = await this.prismaService.announcementFiles.create({
-                    data: {
-                        bucket: fileuploadFile.bucketName,
-                        name: fileuploadFile.filename,
-                        Announcements: { connect: { id: id } },
-                    },
-                });
-                return announcementFile;
-            }),
-        );
+        if (files && files.length > 0) {
+            const uploadFiles = await this.uploadFiles(files);
+            await Promise.all(
+                uploadFiles.map(async (fileuploadFile) => {
+                    const announcementFile = await this.prismaService.announcementFiles.create({
+                        data: {
+                            bucket: fileuploadFile.bucketName,
+                            name: fileuploadFile.filename,
+                            Announcements: { connect: { id: id } },
+                        },
+                    });
+                    return announcementFile;
+                }),
+            );
+        }
         return updateAnnouncement;
     }
 

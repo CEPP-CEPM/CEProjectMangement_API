@@ -29,32 +29,47 @@ export class AssignmentService {
     }
 
     async create(createAssignmentDto: Prisma.AssignmentsCreateInput, files: BufferedFile[]) {
-        const assignment = await this.prismaService.assignments.create({
-            data: {
-                title: createAssignmentDto.title,
-                description: createAssignmentDto.description,
-                dueAt: createAssignmentDto.dueAt
-            },
-            include: {
-                AssignmentFiles: true
-            }
-        })
-        const uploadFiles = await this.uploadFiles(files)
-        await Promise.all(
-            uploadFiles.map(async (file) => {
-                const assignmentFile = await this.prismaService.assignmentFiles.create({
-                    data: {
-                        bucket: file.bucketName,
-                        name: file.filename,
-                        Assignments: {
-                            connect: { id: assignment.id }
-                        }
-                    }
-                })
-                return assignmentFile
+        if (files && files.length > 0) {
+            const assignment = await this.prismaService.assignments.create({
+                data: {
+                    title: createAssignmentDto.title,
+                    description: createAssignmentDto.description,
+                    dueAt: createAssignmentDto.dueAt
+                },
+                include: {
+                    AssignmentFiles: true
+                }
             })
-        )
-        return assignment
+            const uploadFiles = await this.uploadFiles(files)
+            await Promise.all(
+                uploadFiles.map(async (file) => {
+                    const assignmentFile = await this.prismaService.assignmentFiles.create({
+                        data: {
+                            bucket: file.bucketName,
+                            name: file.filename,
+                            Assignments: {
+                                connect: { id: assignment.id }
+                            }
+                        }
+                    })
+                    return assignmentFile
+                })
+            )
+            return assignment
+        } else {
+            console.log("no file");
+            const assignment = await this.prismaService.assignments.create({
+                data: {
+                    title: createAssignmentDto.title,
+                    description: createAssignmentDto.description,
+                    dueAt: createAssignmentDto.dueAt
+                },
+                include: {
+                    AssignmentFiles: true
+                }
+            })
+            return assignment
+        }
     }
 
     async update(id: string, updateAssignmentDto: Prisma.AssignmentsUpdateInput, files: BufferedFile[]) {
@@ -72,19 +87,21 @@ export class AssignmentService {
             }
         })
 
-        const uploadFiles = await this.uploadFiles(files)
-        await Promise.all(
-            uploadFiles.map(async (fileuploadFile) => {
-                const assignmentFile = await this.prismaService.assignmentFiles.create({
-                    data: {
-                        bucket: fileuploadFile.bucketName,
-                        name: fileuploadFile.filename,
-                        Assignments: { connect: { id: id } },
-                    }
+        if (files && files.length > 0) {
+            const uploadFiles = await this.uploadFiles(files)
+            await Promise.all(
+                uploadFiles.map(async (fileuploadFile) => {
+                    const assignmentFile = await this.prismaService.assignmentFiles.create({
+                        data: {
+                            bucket: fileuploadFile.bucketName,
+                            name: fileuploadFile.filename,
+                            Assignments: { connect: { id: id } },
+                        }
+                    })
+                    return assignmentFile
                 })
-                return assignmentFile
-            })
-        )
+            )
+        }
         return updateAssignment
     }
 
