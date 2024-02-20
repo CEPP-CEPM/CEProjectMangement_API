@@ -29,37 +29,56 @@ export class AnnouncementService {
     }
 
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
-        console.log(files)
-        // return await this.prismaService.announcements.create({data: createAnnouncementDto})
-        const announcement = await this.prismaService.announcements.create({
-            data: {
-                title: createAnnouncementDto.title,
-                description: createAnnouncementDto.description,
-                // Advisor: {
-                    // connect: { id: user.id },
-                // },
-            },
-            include: {
-                // Advisor: true,
-                AnnouncementFiles: true,
-            },
-        });
-        const uploadFiles = await this.uploadFiles(files);
-        await Promise.all(
-            uploadFiles.map(async (fileuploadFile) => {
-                const announcementFile = await this.prismaService.announcementFiles.create({
-                    data: {
-                        bucket: fileuploadFile.bucketName,
-                        name: fileuploadFile.filename,
-                        Announcements: {
-                            connect: { id: announcement.id },
+        console.log(files);
+        
+        if (files.length > 0) {
+            console.log("file");
+            const announcement = await this.prismaService.announcements.create({
+                data: {
+                    title: createAnnouncementDto.title,
+                    description: createAnnouncementDto.description,
+                    // Advisor: {
+                        // connect: { id: user.id },
+                    // },
+                },
+                include: {
+                    // Advisor: true,
+                    AnnouncementFiles: true,
+                },
+            });
+            const uploadFiles = await this.uploadFiles(files);
+            await Promise.all(
+                uploadFiles.map(async (fileuploadFile) => {
+                    const announcementFile = await this.prismaService.announcementFiles.create({
+                        data: {
+                            bucket: fileuploadFile.bucketName,
+                            name: fileuploadFile.filename,
+                            Announcements: {
+                                connect: { id: announcement.id },
+                            },
                         },
-                    },
-                });
-                return announcementFile;
-            }),
-        );
-        return announcement;
+                    });
+                    return announcementFile;
+                }),
+            );
+            return announcement;
+        } else {
+            console.log("no file");
+            const announcement = await this.prismaService.announcements.create({
+                data: {
+                    title: createAnnouncementDto.title,
+                    description: createAnnouncementDto.description,
+                    // Advisor: {
+                        // connect: { id: user.id },
+                    // },
+                },
+                include: {
+                    // Advisor: true,
+                    AnnouncementFiles: false,
+                },
+            });
+            return announcement;
+        }
     }
 
     async updateAnnouncement(id: string, updateAnnouncementDto: Prisma.AnnouncementsUpdateInput, files: BufferedFile[]) {
