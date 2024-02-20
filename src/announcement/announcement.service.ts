@@ -29,10 +29,7 @@ export class AnnouncementService {
     }
 
     async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
-        console.log(files);
-        
         if (files && files.length > 0) {
-            console.log("file");
             const announcement = await this.prismaService.announcements.create({
                 data: {
                     title: createAnnouncementDto.title,
@@ -63,7 +60,6 @@ export class AnnouncementService {
             );
             return announcement;
         } else {
-            console.log("no file");
             const announcement = await this.prismaService.announcements.create({
                 data: {
                     title: createAnnouncementDto.title,

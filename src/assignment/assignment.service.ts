@@ -57,7 +57,6 @@ export class AssignmentService {
             )
             return assignment
         } else {
-            console.log("no file");
             const assignment = await this.prismaService.assignments.create({
                 data: {
                     title: createAssignmentDto.title,
