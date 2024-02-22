@@ -17,6 +17,7 @@ import { UserGroupModule } from './user-group/user-group.module';
 import { UserGroupService } from './user-group/user-group.service';
 import { UserGroupController } from './user-group/user-group.controller';
 import { UsersModule } from './users/users.module';
+import { AssignmentSubmitModule } from './assignment-submit/assignment-submit.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UsersModule } from './users/users.module';
       GroupModule,
       UserGroupModule,
       UsersModule,
+      AssignmentSubmitModule,
   ],
   controllers: [AppController, GroupController, UserGroupController],
   providers: [AppService, GroupService, UserGroupService],
