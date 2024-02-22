@@ -34,7 +34,7 @@ export class GroupService {
             })
         )
 
-        if(alreadyGroup) {
+        if(alreadyGroup.length > 0) {
             throw new HttpException({
                 alreadyGroup: alreadyGroup,
                 // message: `${alreadyGroup}`
