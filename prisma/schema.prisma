@@ -48,28 +48,6 @@ model Users {
   // Subject       Subject?
 }
 
-// model Tags {
-//   id              String            @id @default(dbgenerated("gen_random_uuid()"))
-//   name            String
-//   AnnouncementTag AnnouncementTag[]
-//   Topics          Topics[]
-// }
-// model Tags {
-//   id              String            @id @default(dbgenerated("gen_random_uuid()"))
-//   name            String
-//   AnnouncementTag AnnouncementTag[]
-//   Topics          Topics[]
-// }
-
-// model Topics {
-//   id           String         @id @default(dbgenerated("gen_random_uuid()"))
-  // Tags         Tags           @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  // tagId        String
-  // name         String
-  // description  String
-  // Groups       Groups?
-// }
-
 model UserGroups {
   id          String    @id @default(dbgenerated("gen_random_uuid()"))
   Groups      Groups    @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -78,14 +56,6 @@ model UserGroups {
   studentId   String    @unique
   join        Boolean   @default(false) 
 }
-
-// model GroupInvites {
-//   id      String   @id @default(dbgenerated("gen_random_uuid()"))
-//   code    String   @unique @default(dbgenerated("gen_random_uuid()"))
-//   status  Boolean  @default(true)
-//   Groups  Groups   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-//   groupId String   @unique
-// }
 
 model Announcements {
   id                String              @id @default(dbgenerated("gen_random_uuid()"))
@@ -98,22 +68,6 @@ model Announcements {
   // AnnouncementTag   AnnouncementTag[]
   AnnouncementFiles AnnouncementFiles[]
 }
-
-// model AnnouncementTag {
-//   Tags           Tags          @relation(fields: [tagId], references: [id], onDelete: Cascade)
-//   tagId          String
-//   Announcements  Announcements @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-//   announcementId String
-// model AnnouncementTag {
-//   Tags           Tags          @relation(fields: [tagId], references: [id], onDelete: Cascade)
-//   tagId          String
-//   Announcements  Announcements @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-//   announcementId String
-
-//   @@id([tagId, announcementId])
-// }
-//   @@id([tagId, announcementId])
-// }
 
 model Assignments {
   id               String             @id @default(dbgenerated("gen_random_uuid()"))
@@ -200,12 +154,12 @@ model Groups {
   AssignmentSubmit AssignmentSubmit?
 }
 
-model AssignmentGrade {
-  id     String @id @default(dbgenerated("gen_random_uuid()"))
-  score  Float
-  // Users  Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  // userId String @unique
-}
+// model AssignmentGrade {
+//   id            String            @id @default(dbgenerated("gen_random_uuid()"))
+//   score         Float
+//   Users         Users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   userId        String            @unique
+// }
 
 // model Subject {
 //   id          String @id @default(dbgenerated("gen_random_uuid()"))
