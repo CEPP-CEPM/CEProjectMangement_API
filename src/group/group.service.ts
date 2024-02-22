@@ -32,6 +32,11 @@ export class GroupService {
         await Promise.all(
             createGroupDto.userGroup.map(async (email) => {
                 const user = await this.prismaService.users.findUnique({where: {email: email}})
+                if(user.role != "STUDENT"){
+                    throw new HttpException({
+                        message: `${"is not Student"}`
+                }, HttpStatus.BAD_REQUEST)
+                }
                 if (await this.prismaService.userGroups.findUnique({where: {studentId: user.id}})) {
                     alreadyGroup.push(user.email)
                 }
