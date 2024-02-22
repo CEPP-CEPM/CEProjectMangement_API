@@ -38,7 +38,7 @@ export class GroupService {
             })
         )
 
-        if(alreadyGroup) {
+        if(alreadyGroup.length > 0) {
             throw new HttpException({
                 alreadyGroup: alreadyGroup,
                 // message: `${alreadyGroup}`
@@ -78,10 +78,21 @@ export class GroupService {
         const group = await this.prismaService.groups.findUnique({where: {id: id}})
 
         if (updateGroupDto.addUsers) {
+            let alreadyGroup = []
+
             await Promise.all(
                 updateGroupDto.addUsers.map(async (user) => {
                     const addUserId = await this.prismaService.users.findUnique({where: {email: user}})
-                    console.log(addUserId);
+                    if (await this.prismaService.userGroups.findUnique({where: {studentId: addUserId.id}})) {
+                        alreadyGroup.push(addUserId.email)
+                    }
+
+                    if(alreadyGroup.length > 0) {
+                        throw new HttpException({
+                            alreadyGroup: alreadyGroup,
+                            // message: `${alreadyGroup}`
+                    }, HttpStatus.BAD_REQUEST)
+                    }
                     
                     await this.prismaService.userGroups.create({
                         data: {
