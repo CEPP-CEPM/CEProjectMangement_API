@@ -100,28 +100,27 @@ CREATE TABLE "AnnouncementFiles" (
 -- CreateTable
 CREATE TABLE "Groups" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "createBy" TEXT NOT NULL,
     "topic" TEXT NOT NULL,
     "tag" TEXT NOT NULL,
 
     CONSTRAINT "Groups_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "AssignmentGrade" (
-    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
-    "score" DOUBLE PRECISION NOT NULL,
-
-    CONSTRAINT "AssignmentGrade_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserGroups_groupId_key" ON "UserGroups"("groupId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserGroups_studentId_key" ON "UserGroups"("studentId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AssignmentSubmit_groupId_key" ON "AssignmentSubmit"("groupId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Groups_createBy_key" ON "Groups"("createBy");
 
 -- AddForeignKey
 ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -143,3 +142,6 @@ ALTER TABLE "AssignmentFiles" ADD CONSTRAINT "AssignmentFiles_assignmentId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "AnnouncementFiles" ADD CONSTRAINT "AnnouncementFiles_announcementId_fkey" FOREIGN KEY ("announcementId") REFERENCES "Announcements"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Groups" ADD CONSTRAINT "Groups_createBy_fkey" FOREIGN KEY ("createBy") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

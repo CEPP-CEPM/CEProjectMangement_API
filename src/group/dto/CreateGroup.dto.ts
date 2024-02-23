@@ -4,6 +4,10 @@ import { IsNotEmpty } from "class-validator";
 export class CreateGroupDto {
     @ApiProperty()
     @IsNotEmpty()
+    userId: string
+
+    @ApiProperty()
+    @IsNotEmpty()
     topic: string
 
     @ApiProperty()

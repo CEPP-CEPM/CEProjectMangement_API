@@ -49,11 +49,19 @@ export class GroupService {
                 // message: `${alreadyGroup}`
         }, HttpStatus.BAD_REQUEST)
         }
-
+        const user = await this.prismaService.users.findUnique({where: {id: createGroupDto.userId}})
+        if(user.role != "ADVISOR") {
+            throw new HttpException({
+                // message: `${""}`
+        }, HttpStatus.FORBIDDEN)
+        }
         const group = await this.prismaService.groups.create({
             data: {
                 topic: createGroupDto.topic,
                 tag: createGroupDto.tag,
+                Users: {
+                    connect: {id:createGroupDto.userId}
+                },
             },
             include: {
                 UserGroups: true
