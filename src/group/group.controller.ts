@@ -21,8 +21,8 @@ export class GroupController {
     }
 
     @Get('advisor/:advisorId')
-    async findByAdvisorId() {
-
+    async findByAdvisorId(@Param('advisorId') advisorId: string) {
+        return await this.groupService.findByAdvisorId(advisorId)
     }
 
     @Post()

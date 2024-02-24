@@ -25,6 +25,14 @@ export class GroupService {
         })
     }
 
+    async findByAdvisorId(id: string) {
+        return await this.prismaService.groups.findMany({
+            where:{
+                createBy: id
+            }
+        })
+    }
+
     async create(createGroupDto: CreateGroupDto) {
 
         let alreadyGroup = []

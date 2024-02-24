@@ -38,7 +38,7 @@ model Users {
   tel      String? @db.VarChar(10)
   role     Role    @default(STUDENT)
   // register Boolean @default(false)
-  Groups   Groups?
+  Groups   Groups[]
 
   // AssignmentGrade         AssignmentGrade[]
   UserGroups    UserGroups?
@@ -143,7 +143,7 @@ model AnnouncementFiles {
 model Groups {
   id               String             @id @default(dbgenerated("gen_random_uuid()"))
   Users            Users              @relation(fields: [createBy], references: [id], onDelete: Cascade)
-  createBy         String             @unique
+  createBy         String             
   topic            String
   tag              String       
   // Topics           Topics             @relation(fields: [topicId], references: [id], onDelete: Cascade)
