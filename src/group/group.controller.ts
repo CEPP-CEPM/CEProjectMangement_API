@@ -25,6 +25,11 @@ export class GroupController {
         return await this.groupService.findByAdvisorId(advisorId)
     }
 
+    @Get('student/:groupId')
+    async findMemberByGroupId(@Param('groupId') groupId: string) {
+        return await this.groupService.findMemberByGroupId(groupId)
+    }
+
     @Post()
     async create(@Body() createGroupDto: CreateGroupDto) {
         return await this.groupService.create(createGroupDto)
