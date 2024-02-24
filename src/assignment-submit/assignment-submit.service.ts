@@ -56,6 +56,7 @@ export class AssignmentSubmitService {
                     groupId: userGroup.groupId,
                 },
             });
+            if (assignCheck) throw new ConflictException();
             const assignmentSubmit = await this.prismaService.assignmentSubmit.create(
                 {
                     data: {
@@ -82,15 +83,15 @@ export class AssignmentSubmitService {
             //     })
             // )
             const uploadFiles = await this.uploadFiles(files)
-            // console.log(uploadFiles)
             await Promise.all(
                 uploadFiles.map(async (file) => {
-                    const assignmentFile = await this.prismaService.assignmentFiles.create({
+                    console.log(file)
+                    const assignmentFile = await this.prismaService.assignmentSubmitFiles.create({
                         data: {
                             bucket: file.bucketName,
                             name: file.filename,
-                            Assignments: {
-                                connect: { id: assignment.id }
+                            AssignmentSubmit: {
+                                connect: { id: assignmentSubmit.id }
                             }
                         }
                     })
@@ -114,13 +115,16 @@ export class AssignmentSubmitService {
 
     async create(createAssignmentSubmit: CreateAssignmentSubmitDto, user: Users) {
         try {
+            
             const assignment = await this.prismaService.assignments.findUnique({
                 where: { id: createAssignmentSubmit.assignmentId },
             });
+            console.log(assignment)
             if (!assignment) throw new NotFoundException();
             const userGroup = await this.prismaService.userGroups.findUnique({
                 where: { studentId: user.id },
             });
+            console.log(user.id)
             if (!userGroup) throw new ForbiddenException();
             const assignCheck = await this.prismaService.assignmentSubmit.findUnique({
                 where: {

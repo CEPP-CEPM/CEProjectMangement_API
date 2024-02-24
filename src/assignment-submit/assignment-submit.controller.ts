@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors, Request } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AssignmentSubmitService } from './assignment-submit.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -8,6 +8,7 @@ import { Users } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 import { UpdateProtorDto } from './dto/update-assiggnmentSubmit.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('assignment-submit')
 @Controller('assignment-submit')
@@ -26,24 +27,25 @@ export class AssignmentSubmitController {
         return await this.assignmentSubmitService.findById(id);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('')
     @UseInterceptors(FilesInterceptor('files'))
     async create(
         @UploadedFiles()
         files: BufferedFile[],
         @Body() createAssignmentSubmit: CreateAssignmentSubmitDto,
-        user: Users,
+        @Request() req
     ) {
         if (files != undefined && files.length > 0) {
             return await this.assignmentSubmitService.createAssignmentSubmit(
                 files,
                 createAssignmentSubmit,
-                user,
+                req.user,
             );
         } else {
             return await this.assignmentSubmitService.create(
                 createAssignmentSubmit,
-                user,
+                req.user,
             );
         }
     }
