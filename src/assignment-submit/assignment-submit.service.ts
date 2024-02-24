@@ -237,7 +237,7 @@ export class AssignmentSubmitService {
             files.map(async (file) => {
                 const uploaded_file = await this.minioClientService.upload(
                     file,
-                    'assignment',
+                    'assignment-submit',
                 );
                 return uploaded_file;
             }),
