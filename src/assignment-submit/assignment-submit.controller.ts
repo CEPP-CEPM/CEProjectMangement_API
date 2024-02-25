@@ -74,8 +74,15 @@ export class AssignmentSubmitController {
         );
     }
 
-    @Delete(':id')
-    async deleteFile(@Param('id') id: string, user: Users) {
-        return await this.assignmentSubmitService.deleteFile(id, user);
+    // @Delete(':id')
+    // async deleteFile(@Param('id') id: string, user: Users) {
+    //     return await this.assignmentSubmitService.deleteFile(id, user);
+    // }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('/student/:id')
+    async cancelSubmit(@Param('id') id: string, @Request() req) {
+        return await this.assignmentSubmitService.cancelSubmit(id, req.user)
     }
+
 }

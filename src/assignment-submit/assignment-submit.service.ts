@@ -5,6 +5,8 @@ import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAssignmentSubmitDto } from './dto/create-assignmentSubmit.dto';
 import { UpdateProtorDto } from './dto/update-assiggnmentSubmit.dto';
+import { deleteAssignmentsSubmitFiles } from 'src/interfaces/deleteFiles.interface';
+
 
 @Injectable()
 export class AssignmentSubmitService {
@@ -251,6 +253,14 @@ export class AssignmentSubmitService {
         }
     }
 
+    async cancelSubmit(assignmentSubmitid: string, user:Users) {
+        const assignSubmitFile = await this.prismaService.assignmentSubmitFiles.findMany({where:{assignmentSubmitId: assignmentSubmitid}})
+        if(assignSubmitFile){
+            await this.deleteFiles(assignSubmitFile)
+        }
+        return await this.prismaService.assignmentSubmit.delete({where:{id: assignmentSubmitid}})
+    }
+
     async deleteFile(id: string, user: Users) {
         try {
             const file = await this.prismaService.assignmentSubmitFiles.findUnique({
@@ -288,6 +298,15 @@ export class AssignmentSubmitService {
         return uploaded_files;
     }
 
-
+    private async deleteFiles(files: deleteAssignmentsSubmitFiles[]) {
+        await Promise.all(
+            files.map(async (file) => {
+                await this.minioClientService.delete(
+                    file.name,
+                    file.bucket
+                )
+            })
+        )
+    }
 
 }
