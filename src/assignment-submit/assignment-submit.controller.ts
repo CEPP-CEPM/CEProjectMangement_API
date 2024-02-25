@@ -23,6 +23,12 @@ export class AssignmentSubmitController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('/advisor/:assignId')
+    async findAssignSubmitByAvisorId(@Param('assignId') assignId: string, @Request() req) {
+        return await this.assignmentSubmitService.findAssignSubmitByAvisorId(assignId, req.user)
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('/student/:assignId')
     async findOne(@Param('assignId') assignId: string, @Request() req) {
         return await this.assignmentSubmitService.findOne(assignId, req.user)
@@ -83,6 +89,12 @@ export class AssignmentSubmitController {
     @Delete('/student/:id')
     async cancelSubmit(@Param('id') id: string, @Request() req) {
         return await this.assignmentSubmitService.cancelSubmit(id, req.user)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('/advisor/:id')
+    async rejectSubmit(@Param('id') id: string, @Request() req) {
+        return await this.assignmentSubmitService.rejectSubmit(id, req.user)
     }
 
 }
