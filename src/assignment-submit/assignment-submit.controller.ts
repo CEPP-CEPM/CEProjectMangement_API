@@ -68,22 +68,28 @@ export class AssignmentSubmitController {
         }
     }
 
-    @Put('/advisor/:id')
-    @Roles(Role.ADVISOR)
-    async updateByAdvisor(
-        @Param('id') id: string,
-        @Body() updateProtorDto: UpdateProtorDto,
-    ) {
-        return await this.assignmentSubmitService.updateByAdvisor(
-            id,
-            updateProtorDto,
-        );
-    }
+    // @Put('/advisor/:id')
+    // @Roles(Role.ADVISOR)
+    // async updateByAdvisor(
+    //     @Param('id') id: string,
+    //     @Body() updateProtorDto: UpdateProtorDto,
+    // ) {
+    //     return await this.assignmentSubmitService.updateByAdvisor(
+    //         id,
+    //         updateProtorDto,
+    //     );
+    // }
 
     // @Delete(':id')
     // async deleteFile(@Param('id') id: string, user: Users) {
     //     return await this.assignmentSubmitService.deleteFile(id, user);
     // }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('/advisor/:id')
+    async approveByAdvisor(@Param('id') id: string, @Request() req) {
+        return await this.assignmentSubmitService.approveByAdvisor(id, req.user)
+    }
 
     @UseGuards(JwtAuthGuard)
     @Delete('/student/:id')

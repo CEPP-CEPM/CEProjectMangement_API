@@ -45,7 +45,7 @@ export class AssignmentSubmitService {
     async findOne(assignId: string, user: Users) {
         const group = await this.prismaService.userGroups.findUnique({
             where: {
-                studentId: 'b4f72b4c-e88b-4cc3-8e94-08429cca71da'
+                studentId: user.id
             }
         })
         const assignSubmit = await this.prismaService.assignmentSubmit.findMany({
@@ -54,7 +54,7 @@ export class AssignmentSubmitService {
                 assignmentId: assignId
             }
         })
-        console.log(assignSubmit)
+        // console.log(assignSubmit)
         return assignSubmit
     }
 
@@ -218,51 +218,61 @@ export class AssignmentSubmitService {
         }
     }
 
-    async updateByAdvisor(id: string, updateProtorDto: UpdateProtorDto) {
-        try {
-            const assignmentSubmit =
-                await this.prismaService.assignmentSubmit.findUnique({
-                    where: { id: id },
-                });
-            if (assignmentSubmit.status != 'SEND') throw new ForbiddenException();
-            if (updateProtorDto.status == AssignmentStatus.APPROVE) {
-                const submit = await this.prismaService.assignmentSubmit.update({
-                    data: { status: 'APPROVE' },
-                    where: { id: id },
-                });
-                return submit;
-            } else if (updateProtorDto.status == AssignmentStatus.REJECT) {
-                const submit = await this.prismaService.assignmentSubmit.update({
-                    data: { status: 'REJECT' },
-                    where: { id: id },
-                });
-                return submit;
-            }
-            throw new ForbiddenException();
-        } catch (err) {
-            return err.response;
-        }
-    }
+    // async updateByAdvisor(id: string, updateProtorDto: UpdateProtorDto) {
+    //     try {
+    //         const assignmentSubmit =
+    //             await this.prismaService.assignmentSubmit.findUnique({
+    //                 where: { id: id },
+    //             });
+    //         if (assignmentSubmit.status != 'SEND') throw new ForbiddenException();
+    //         if (updateProtorDto.status == AssignmentStatus.APPROVE) {
+    //             const submit = await this.prismaService.assignmentSubmit.update({
+    //                 data: { status: 'APPROVE' },
+    //                 where: { id: id },
+    //             });
+    //             return submit;
+    //         } else if (updateProtorDto.status == AssignmentStatus.REJECT) {
+    //             const submit = await this.prismaService.assignmentSubmit.update({
+    //                 data: { status: 'REJECT' },
+    //                 where: { id: id },
+    //             });
+    //             return submit;
+    //         }
+    //         throw new ForbiddenException();
+    //     } catch (err) {
+    //         return err.response;
+    //     }
+    // }
 
-    async cancleAssignment(id: string, user: Users) {
-        try {
-            const assignment = await this.prismaService.assignmentSubmit.findUnique({
-                where: { id: id },
-                include: { Assignments: true },
-            });
-            if (!assignment) throw new NotFoundException();
-            const userGroup = await this.prismaService.userGroups.findUnique({
-                where: { studentId: user.id },
-            });
-            if (!userGroup) throw new NotFoundException();
-            if (assignment.status !== 'SEND') throw new ForbiddenException();
-            return await this.prismaService.assignmentSubmit.update({
-                data: { status: 'NOTSEND' },
-                where: { id: id },
-            });
-        } catch (err) {
-            return err.response;
-        }
+    // async cancleAssignment(id: string, user: Users) {
+    //     try {
+    //         const assignment = await this.prismaService.assignmentSubmit.findUnique({
+    //             where: { id: id },
+    //             include: { Assignments: true },
+    //         });
+    //         if (!assignment) throw new NotFoundException();
+    //         const userGroup = await this.prismaService.userGroups.findUnique({
+    //             where: { studentId: user.id },
+    //         });
+    //         if (!userGroup) throw new NotFoundException();
+    //         if (assignment.status !== 'SEND') throw new ForbiddenException();
+    //         return await this.prismaService.assignmentSubmit.update({
+    //             data: { status: 'NOTSEND' },
+    //             where: { id: id },
+    //         });
+    //     } catch (err) {
+    //         return err.response;
+    //     }
+    // }
+
+    async approveByAdvisor(assignmentSubmitid: string, user: Users) {
+        const assignSubmit = await this.prismaService.assignmentSubmit.findUnique({where:{id: assignmentSubmitid}})
+        const group = await this.prismaService.groups.findUnique({where:{id: assignSubmit.groupId}})
+        if(group.createBy != user.id) throw new ForbiddenException
+        return await this.prismaService.assignmentSubmit.update({
+            data: { status: 'APPROVE' },
+            where: { id: assignmentSubmitid },
+        });
     }
 
     async cancelSubmit(assignmentSubmitid: string, user:Users) {
@@ -289,28 +299,28 @@ export class AssignmentSubmitService {
         return await this.prismaService.assignmentSubmit.delete({where:{id: assignmentSubmitid}})
     }
 
-    async deleteFile(id: string, user: Users) {
-        try {
-            const file = await this.prismaService.assignmentSubmitFiles.findUnique({
-                where: { id: id },
-                include: { AssignmentSubmit: { include: { Assignments: true } } },
-            });
-            if (!file) throw new NotFoundException();
-            const group = await this.prismaService.userGroups.findUnique({
-                where: {
-                    studentId: user.id,
-                    groupId: file.AssignmentSubmit.groupId,
-                },
-            });
-            if (!group) throw new ForbiddenException();
-            await this.minioClientService.delete(file.name, 'submit');
-            await this.prismaService.assignmentSubmitFiles.delete({
-                where: { id: id },
-            });
-        } catch (err) {
-            return err.response;
-        }
-    }
+    // async deleteFile(id: string, user: Users) {
+    //     try {
+    //         const file = await this.prismaService.assignmentSubmitFiles.findUnique({
+    //             where: { id: id },
+    //             include: { AssignmentSubmit: { include: { Assignments: true } } },
+    //         });
+    //         if (!file) throw new NotFoundException();
+    //         const group = await this.prismaService.userGroups.findUnique({
+    //             where: {
+    //                 studentId: user.id,
+    //                 groupId: file.AssignmentSubmit.groupId,
+    //             },
+    //         });
+    //         if (!group) throw new ForbiddenException();
+    //         await this.minioClientService.delete(file.name, 'submit');
+    //         await this.prismaService.assignmentSubmitFiles.delete({
+    //             where: { id: id },
+    //         });
+    //     } catch (err) {
+    //         return err.response;
+    //     }
+    // }
 
     private async uploadFiles(files: BufferedFile[]) {
         const uploaded_files = await Promise.all(
