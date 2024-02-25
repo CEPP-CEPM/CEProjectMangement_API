@@ -17,15 +17,53 @@ export class AssignmentSubmitService {
         return this.prismaService.assignments.findMany()
     }
 
-    async findOne(id: string) {
-        return this.prismaService.assignments.findUnique({
+    // async findOne(id: string) {
+    //     return this.prismaService.assignments.findUnique({
+    //         where: {
+    //             id: id
+    //         },
+    //         include: {
+    //             AssignmentFiles: true
+    //         }
+    //     })
+    // }
+
+    async findOne(assignId: string, user: Users) {
+        const group = await this.prismaService.userGroups.findUnique({
             where: {
-                id: id
-            },
-            include: {
-                AssignmentFiles: true
+                studentId: 'b4f72b4c-e88b-4cc3-8e94-08429cca71da'
             }
         })
+        const assignSubmit = await this.prismaService.assignmentSubmit.findMany({
+            where: {
+                groupId: group.groupId,
+                assignmentId: assignId
+            }
+        })
+        console.log(assignSubmit)
+        return assignSubmit
+    }
+
+    async findOneSubmitFiles(assignId: string, user: Users) {
+        const group = await this.prismaService.userGroups.findUnique({
+            where: {
+                studentId: user.id
+            }
+        })
+        console.log(group.groupId);
+        const assignSubmit = await this.prismaService.assignmentSubmit.findMany({
+            where: {
+                groupId: group.groupId,
+                assignmentId: assignId
+            }
+        })
+        const assignSubmitFile = await Promise.all(
+            assignSubmit.map(async (submit) => {
+                return await this.prismaService.assignmentSubmitFiles.findMany({
+                    where: { assignmentSubmitId: submit.id }
+                })
+            }))
+        return assignSubmitFile
     }
 
     async findById(id: string) {
@@ -50,7 +88,7 @@ export class AssignmentSubmitService {
             const userGroup = await this.prismaService.userGroups.findUnique({
                 where: { studentId: user.id }
             })
-            const assignCheck = await this.prismaService.assignmentSubmit.findUnique({
+            const assignCheck = await this.prismaService.assignmentSubmit.findMany({
                 where: {
                     assignmentId: createAssignmentSubmitDto.assignmentId,
                     groupId: userGroup.groupId,
@@ -115,7 +153,7 @@ export class AssignmentSubmitService {
 
     async create(createAssignmentSubmit: CreateAssignmentSubmitDto, user: Users) {
         try {
-            
+
             const assignment = await this.prismaService.assignments.findUnique({
                 where: { id: createAssignmentSubmit.assignmentId },
             });
@@ -126,7 +164,7 @@ export class AssignmentSubmitService {
             });
             console.log(user.id)
             if (!userGroup) throw new ForbiddenException();
-            const assignCheck = await this.prismaService.assignmentSubmit.findUnique({
+            const assignCheck = await this.prismaService.assignmentSubmit.findMany({
                 where: {
                     assignmentId: createAssignmentSubmit.assignmentId,
                     groupId: userGroup.groupId,

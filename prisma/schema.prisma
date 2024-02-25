@@ -104,7 +104,7 @@ model Assignments {
 model AssignmentSubmit {
   id                    String                  @id @default(dbgenerated("gen_random_uuid()"))
   Groups                Groups                  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId               String                  @unique
+  groupId               String                  
   Assignments           Assignments             @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   assignmentId          String                  
   status                AssignmentStatus        @default(NOTSEND)
@@ -151,7 +151,7 @@ model Groups {
   UserGroups       UserGroups[]
   
   // AssignmentGroups AssignmentGroups[]
-  AssignmentSubmit AssignmentSubmit?
+  AssignmentSubmit AssignmentSubmit[]
 }
 
 // model AssignmentGrade {

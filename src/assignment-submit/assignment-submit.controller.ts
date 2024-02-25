@@ -22,6 +22,18 @@ export class AssignmentSubmitController {
         return await this.assignmentSubmitService.findAll()
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('/student/:assignId')
+    async findOne(@Param('assignId') assignId: string, @Request() req) {
+        return await this.assignmentSubmitService.findOne(assignId, req.user)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/student/file/:assignId')
+    async findOneSubmitFiles(@Param('assignId') assignId: string, @Request() req) {
+        return await this.assignmentSubmitService.findOneSubmitFiles(assignId, req.user)
+    }
+
     @Get(':id')
     async findById(@Param('id') id: string) {
         return await this.assignmentSubmitService.findById(id);
