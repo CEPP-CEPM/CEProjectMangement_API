@@ -33,7 +33,11 @@ export class AssignmentSubmitService {
                 allAssignSubmit.push(assignSubmit)
             }
         }))
-        return allAssignSubmit
+        console.log(allAssignSubmit)
+        return await Promise.all( allAssignSubmit.map( async (assignSubmit) => {
+            return await this.prismaService.assignmentSubmit.findUnique({where:{id: assignSubmit[0].id}})
+            
+        }))
     }
 
     // async findOne(id: string) {
