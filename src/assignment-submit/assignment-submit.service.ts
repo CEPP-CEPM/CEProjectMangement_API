@@ -35,7 +35,10 @@ export class AssignmentSubmitService {
         }))
         console.log(allAssignSubmit)
         return await Promise.all( allAssignSubmit.map( async (assignSubmit) => {
-            return await this.prismaService.assignmentSubmit.findUnique({where:{id: assignSubmit[0].id}})
+            return await this.prismaService.assignmentSubmit.findUnique({
+                where:{id: assignSubmit[0].id},
+                include:{Groups: true}
+            })
             
         }))
     }
