@@ -21,14 +21,19 @@ export class AssignmentSubmitService {
 
     async findAssignSubmitByAvisorId(assignId: string, user: Users){
         const myGroup = await this.prismaService.groups.findMany({where:{createBy: user.id}})
-        return await Promise.all( myGroup.map( async (group) => {
-            return await this.prismaService.assignmentSubmit.findMany({
+        let allAssignSubmit = []
+        await Promise.all( myGroup.map( async (group) => {
+            const assignSubmit = await this.prismaService.assignmentSubmit.findMany({
                 where:{
                     groupId: group.id,
                     assignmentId: assignId
                 }
             })
+            if (assignSubmit.length != 0){
+                allAssignSubmit.push(assignSubmit)
+            }
         }))
+        return allAssignSubmit
     }
 
     // async findOne(id: string) {
