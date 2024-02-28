@@ -108,6 +108,7 @@ export class AssignmentSubmitService {
 
     async createAssignmentSubmit(files: BufferedFile[], createAssignmentSubmitDto: CreateAssignmentSubmitDto, user: Users) {
         try {
+            console.log(files)
             const assignment = await this.prismaService.assignments.findUnique({
                 where: { id: createAssignmentSubmitDto.assignmentId },
             });
@@ -120,7 +121,7 @@ export class AssignmentSubmitService {
                     groupId: userGroup.groupId,
                 },
             });
-            if (assignCheck) throw new ConflictException();
+            if (assignCheck.length) throw new ConflictException();
             const assignmentSubmit = await this.prismaService.assignmentSubmit.create(
                 {
                     data: {
@@ -179,16 +180,17 @@ export class AssignmentSubmitService {
 
     async create(createAssignmentSubmit: CreateAssignmentSubmitDto, user: Users) {
         try {
-
+            console.log(createAssignmentSubmit);
+            
             const assignment = await this.prismaService.assignments.findUnique({
                 where: { id: createAssignmentSubmit.assignmentId },
             });
-            console.log(assignment)
+            // console.log(assignment)
             if (!assignment) throw new NotFoundException();
             const userGroup = await this.prismaService.userGroups.findUnique({
                 where: { studentId: user.id },
             });
-            console.log(user.id)
+            // console.log(user.id)
             if (!userGroup) throw new ForbiddenException();
             const assignCheck = await this.prismaService.assignmentSubmit.findMany({
                 where: {
@@ -196,7 +198,9 @@ export class AssignmentSubmitService {
                     groupId: userGroup.groupId,
                 },
             });
-            if (assignCheck) throw new ConflictException();
+            // console.log(userGroup)
+            // console.log(assignCheck)
+            if (assignCheck.length) throw new ConflictException();
             const check = this.checkCodeIsExpire(assignment.dueAt);
             if (check) {
                 const assignmentSubmit =
