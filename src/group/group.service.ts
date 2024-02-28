@@ -33,10 +33,17 @@ export class GroupService {
         })
     }
 
+    async findAdvisorGroupByGroupId(id:string) {
+        const group = await this.prismaService.groups.findUnique({where:{id: id}})
+        return await this.prismaService.users.findUnique({where:{id: group.createBy}})
+    }
+
     async findMemberByGroupId(id: string){
         const userGroup = await this.prismaService.userGroups.findMany({where: {groupId: id}})
         const member = await Promise.all( userGroup.map(async (user) => {
-            return await this.prismaService.users.findUnique({where:{id:user.studentId}})
+            return await this.prismaService.users.findUnique({
+                where:{id:user.studentId},
+            })
         }) )
         return member
     }
