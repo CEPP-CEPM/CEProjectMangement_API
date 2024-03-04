@@ -18,6 +18,9 @@ import { UserGroupService } from './user-group/user-group.service';
 import { UserGroupController } from './user-group/user-group.controller';
 import { UsersModule } from './users/users.module';
 import { AssignmentSubmitModule } from './assignment-submit/assignment-submit.module';
+import { CsvController } from './csv/csv.controller';
+import { CsvService } from './csv/csv.service';
+import { CsvModule } from './csv/csv.module';
 
 @Module({
   imports: [
@@ -33,8 +36,9 @@ import { AssignmentSubmitModule } from './assignment-submit/assignment-submit.mo
       UserGroupModule,
       UsersModule,
       AssignmentSubmitModule,
+      CsvModule,
   ],
-  controllers: [AppController, GroupController, UserGroupController],
-  providers: [AppService, GroupService, UserGroupService],
+  controllers: [AppController, GroupController, UserGroupController, CsvController],
+  providers: [AppService, GroupService, UserGroupService, CsvService],
 })
 export class AppModule {}
