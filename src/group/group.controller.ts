@@ -15,14 +15,24 @@ export class GroupController {
         return await this.groupService.findAll()
     }
 
+    @Get('student/advisor/:groupId')
+    async findAdvisorGroup(@Param('groupId') groupId: string) {
+        return await this.groupService.findByAdvisorId(groupId)
+    }
+
     @Get(':groupId')
     async findByGroupId(@Param('groupId') groupId: string) {
         return await this.groupService.findByGroupId(groupId)
     }
 
     @Get('advisor/:advisorId')
-    async findByAdvisorId() {
+    async findByAdvisorId(@Param('advisorId') advisorId: string) {
+        return await this.groupService.findByAdvisorId(advisorId)
+    }
 
+    @Get('student/:groupId')
+    async findMemberByGroupId(@Param('groupId') groupId: string) {
+        return await this.groupService.findMemberByGroupId(groupId)
     }
 
     @Post()

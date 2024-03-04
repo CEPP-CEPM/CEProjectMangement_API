@@ -13,3 +13,11 @@ export interface deleteAnnouncementsFiles {
     bucket: string;
     createAt: Date;
 }
+
+export interface deleteAssignmentsSubmitFiles {
+    id: string
+    assignmentSubmitId: string;
+    name: string;
+    bucket: string;
+    createAt: Date;
+}

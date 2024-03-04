@@ -25,6 +25,29 @@ export class GroupService {
         })
     }
 
+    async findByAdvisorId(id: string) {
+        return await this.prismaService.groups.findMany({
+            where:{
+                createBy: id
+            }
+        })
+    }
+
+    async findAdvisorGroupByGroupId(id:string) {
+        const group = await this.prismaService.groups.findUnique({where:{id: id}})
+        return await this.prismaService.users.findUnique({where:{id: group.createBy}})
+    }
+
+    async findMemberByGroupId(id: string){
+        const userGroup = await this.prismaService.userGroups.findMany({where: {groupId: id}})
+        const member = await Promise.all( userGroup.map(async (user) => {
+            return await this.prismaService.users.findUnique({
+                where:{id:user.studentId},
+            })
+        }) )
+        return member
+    }
+
     async create(createGroupDto: CreateGroupDto) {
 
         let alreadyGroup = []
@@ -32,6 +55,11 @@ export class GroupService {
         await Promise.all(
             createGroupDto.userGroup.map(async (email) => {
                 const user = await this.prismaService.users.findUnique({where: {email: email}})
+                if(user.role != "STUDENT"){
+                    throw new HttpException({
+                        message: `${"is not Student"}`
+                }, HttpStatus.BAD_REQUEST)
+                }
                 if (await this.prismaService.userGroups.findUnique({where: {studentId: user.id}})) {
                     alreadyGroup.push(user.email)
                 }
@@ -44,11 +72,13 @@ export class GroupService {
                 // message: `${alreadyGroup}`
         }, HttpStatus.BAD_REQUEST)
         }
-
         const group = await this.prismaService.groups.create({
             data: {
                 topic: createGroupDto.topic,
                 tag: createGroupDto.tag,
+                Users: {
+                    connect: {id:createGroupDto.userId}
+                },
             },
             include: {
                 UserGroups: true

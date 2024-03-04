@@ -38,7 +38,7 @@ model Users {
   tel      String? @db.VarChar(10)
   role     Role    @default(STUDENT)
   // register Boolean @default(false)
-  // Groups   Groups?
+  Groups   Groups[]
 
   // AssignmentGrade         AssignmentGrade[]
   UserGroups    UserGroups?
@@ -51,7 +51,7 @@ model Users {
 model UserGroups {
   id          String    @id @default(dbgenerated("gen_random_uuid()"))
   Groups      Groups    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId     String
+  groupId     String    
   Users       Users     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId   String    @unique
   join        Boolean   @default(false) 
@@ -104,7 +104,7 @@ model Assignments {
 model AssignmentSubmit {
   id                    String                  @id @default(dbgenerated("gen_random_uuid()"))
   Groups                Groups                  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId               String                  @unique
+  groupId               String                  
   Assignments           Assignments             @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   assignmentId          String                  
   status                AssignmentStatus        @default(NOTSEND)
@@ -142,8 +142,8 @@ model AnnouncementFiles {
 
 model Groups {
   id               String             @id @default(dbgenerated("gen_random_uuid()"))
-  // Users            Users              @relation(fields: [createBy], references: [id], onDelete: Cascade)
-  // createBy         String             @unique
+  Users            Users              @relation(fields: [createBy], references: [id], onDelete: Cascade)
+  createBy         String             
   topic            String
   tag              String       
   // Topics           Topics             @relation(fields: [topicId], references: [id], onDelete: Cascade)
@@ -151,7 +151,7 @@ model Groups {
   UserGroups       UserGroups[]
   
   // AssignmentGroups AssignmentGroups[]
-  AssignmentSubmit AssignmentSubmit?
+  AssignmentSubmit AssignmentSubmit[]
 }
 
 // model AssignmentGrade {

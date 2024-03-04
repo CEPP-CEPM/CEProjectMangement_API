@@ -10,7 +10,7 @@ export class UsersService {
     }
 
     async findStudent() {
-
+        return await this.prismaService.users.findMany({where: {role: 'STUDENT'}})
     }
 
     async findAdvisor() {
