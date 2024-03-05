@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors, Request, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AssignmentSubmitService } from './assignment-submit.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -53,7 +53,7 @@ export class AssignmentSubmitController {
         files: BufferedFile[],
         @Body() createAssignmentSubmit: CreateAssignmentSubmitDto,
         @Request() req
-    ) {
+    ) {        
         if (files != undefined && files.length > 0) {
             return await this.assignmentSubmitService.createAssignmentSubmit(
                 files,
@@ -86,7 +86,7 @@ export class AssignmentSubmitController {
     // }
 
     @UseGuards(JwtAuthGuard)
-    @Put('/advisor/:id')
+    @Patch('/advisor/:id')
     async approveByAdvisor(@Param('id') id: string, @Request() req) {
         return await this.assignmentSubmitService.approveByAdvisor(id, req.user)
     }
