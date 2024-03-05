@@ -4,9 +4,6 @@ CREATE TYPE "Role" AS ENUM ('STUDENT', 'ADVISOR', 'PROCTOR');
 -- CreateEnum
 CREATE TYPE "AssignmentStatus" AS ENUM ('NOTSEND', 'SEND', 'TURNINLATE', 'REJECT', 'APPROVE');
 
--- CreateEnum
-CREATE TYPE "CommentAssignmentType" AS ENUM ('PRIVATE', 'PUBLIC');
-
 -- CreateTable
 CREATE TABLE "Users" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
@@ -107,20 +104,23 @@ CREATE TABLE "Groups" (
     CONSTRAINT "Groups_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+-- CreateTable
+CREATE TABLE "AssignmentGrade" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "userId" TEXT NOT NULL,
+    "assignmentSubmitId" TEXT NOT NULL,
+
+    CONSTRAINT "AssignmentGrade_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserGroups_groupId_key" ON "UserGroups"("groupId");
+CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserGroups_studentId_key" ON "UserGroups"("studentId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "AssignmentSubmit_groupId_key" ON "AssignmentSubmit"("groupId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Groups_createBy_key" ON "Groups"("createBy");
+CREATE UNIQUE INDEX "AssignmentGrade_userId_key" ON "AssignmentGrade"("userId");
 
 -- AddForeignKey
 ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -145,3 +145,9 @@ ALTER TABLE "AnnouncementFiles" ADD CONSTRAINT "AnnouncementFiles_announcementId
 
 -- AddForeignKey
 ALTER TABLE "Groups" ADD CONSTRAINT "Groups_createBy_fkey" FOREIGN KEY ("createBy") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssignmentGrade" ADD CONSTRAINT "AssignmentGrade_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssignmentGrade" ADD CONSTRAINT "AssignmentGrade_assignmentSubmitId_fkey" FOREIGN KEY ("assignmentSubmitId") REFERENCES "AssignmentSubmit"("id") ON DELETE CASCADE ON UPDATE CASCADE;

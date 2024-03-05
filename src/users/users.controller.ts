@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @ApiTags('users')
@@ -23,6 +24,12 @@ export class UsersController {
     @Get('Advisor')
     async findAdvisor() {
         return await this.usersService.findAdvisor()
+    }
+
+    @Post()
+    @UseInterceptors(FileInterceptor('file'))
+    async addUsers(@UploadedFile() file: Express.Multer.File) {
+        return await this.usersService.addUsers(file)
     }
 
 }

@@ -71,7 +71,6 @@ model Assignments {
   modifyAt         DateTime            @updatedAt()
   AssignmentFiles  AssignmentFiles[]
   AssignmentSubmit AssignmentSubmit[]
-  AssignmentGrade  AssignmentGrade[] 
 }
 
 model AssignmentSubmit {
@@ -127,9 +126,7 @@ model Groups {
 model AssignmentGrade {
   id                  String            @id @default(dbgenerated("gen_random_uuid()"))
   Users               Users             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId              String            @unique
-  Assignments         Assignments       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  assignmentId        String            
+  userId              String            @unique  
   AssignmentSubmit    AssignmentSubmit  @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
   assignmentSubmitId  String
 }
