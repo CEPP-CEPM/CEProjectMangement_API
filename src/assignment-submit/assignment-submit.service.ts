@@ -19,27 +19,27 @@ export class AssignmentSubmitService {
         return this.prismaService.assignments.findMany()
     }
 
-    async findAssignSubmitByAvisorId(assignId: string, user: Users){
-        const myGroup = await this.prismaService.groups.findMany({where:{createBy: user.id}})
+    async findAssignSubmitByAvisorId(assignId: string, user: Users) {
+        const myGroup = await this.prismaService.groups.findMany({ where: { createBy: user.id } })
         let allAssignSubmit = []
-        await Promise.all( myGroup.map( async (group) => {
+        await Promise.all(myGroup.map(async (group) => {
             const assignSubmit = await this.prismaService.assignmentSubmit.findMany({
-                where:{
+                where: {
                     groupId: group.id,
                     assignmentId: assignId
                 }
             })
-            if (assignSubmit.length != 0){
+            if (assignSubmit.length != 0) {
                 allAssignSubmit.push(assignSubmit)
             }
         }))
         console.log(allAssignSubmit)
-        return await Promise.all( allAssignSubmit.map( async (assignSubmit) => {
+        return await Promise.all(allAssignSubmit.map(async (assignSubmit) => {
             return await this.prismaService.assignmentSubmit.findUnique({
-                where:{id: assignSubmit[0].id},
-                include:{Groups: true}
+                where: { id: assignSubmit[0].id },
+                include: { Groups: true }
             })
-            
+
         }))
     }
 
@@ -181,7 +181,7 @@ export class AssignmentSubmitService {
     async create(createAssignmentSubmit: CreateAssignmentSubmitDto, user: Users) {
         try {
             console.log(createAssignmentSubmit);
-            
+
             const assignment = await this.prismaService.assignments.findUnique({
                 where: { id: createAssignmentSubmit.assignmentId },
             });
@@ -281,38 +281,53 @@ export class AssignmentSubmitService {
     //     }
     // }
 
-    async approveByAdvisor(assignmentSubmitid: string, user: Users) {
-        const assignSubmit = await this.prismaService.assignmentSubmit.findUnique({where:{id: assignmentSubmitid}})
-        const group = await this.prismaService.groups.findUnique({where:{id: assignSubmit.groupId}})
-        if(group.createBy != user.id) throw new ForbiddenException
+    async approveByAdvisor(assignSubmitid: string, user: Users) {
+        const assignSubmit = await this.prismaService.assignmentSubmit.findUnique({ where: { id: assignSubmitid } })
+        const group = await this.prismaService.groups.findUnique({ where: { id: assignSubmit.groupId } })
+        if (group.createBy != user.id) throw new ForbiddenException
+        const usergroup = await this.prismaService.userGroups.findMany({where: {groupId: group.id}})
+        await Promise.all(
+            usergroup.map(async(user) =>{
+                await this.prismaService.assignmentGrade.create({
+                    data:{
+                        AssignmentSubmit:{
+                            connect: {id: assignSubmitid}
+                        },
+                        Users: {
+                            connect: {id: user.studentId}
+                        }
+                    }
+                })
+            })
+        )
         return await this.prismaService.assignmentSubmit.update({
             data: { status: 'APPROVE' },
-            where: { id: assignmentSubmitid },
+            where: { id: assignSubmitid },
         });
     }
 
-    async cancelSubmit(assignmentSubmitid: string, user:Users) {
-        const group = await this.prismaService.userGroups.findUnique({where:{studentId: user.id}})
+    async cancelSubmit(assignmentSubmitid: string, user: Users) {
+        const group = await this.prismaService.userGroups.findUnique({ where: { studentId: user.id } })
         const assiggnmentSubmit = await this.prismaService.assignmentSubmit.findUnique({
-            where:{
+            where: {
                 id: assignmentSubmitid,
                 groupId: group.groupId
             }
         })
-        if(!assiggnmentSubmit) throw new NotFoundException
-        const assignSubmitFile = await this.prismaService.assignmentSubmitFiles.findMany({where:{assignmentSubmitId: assignmentSubmitid}})
-        if(assignSubmitFile){
+        if (!assiggnmentSubmit) throw new NotFoundException
+        const assignSubmitFile = await this.prismaService.assignmentSubmitFiles.findMany({ where: { assignmentSubmitId: assignmentSubmitid } })
+        if (assignSubmitFile) {
             await this.deleteFiles(assignSubmitFile)
         }
-        return await this.prismaService.assignmentSubmit.delete({where:{id: assignmentSubmitid}})
+        return await this.prismaService.assignmentSubmit.delete({ where: { id: assignmentSubmitid } })
     }
 
-    async rejectSubmit(assignmentSubmitid: string, user:Users) {
-        const assignSubmitFile = await this.prismaService.assignmentSubmitFiles.findMany({where:{assignmentSubmitId: assignmentSubmitid}})
-        if(assignSubmitFile){
+    async rejectSubmit(assignmentSubmitid: string, user: Users) {
+        const assignSubmitFile = await this.prismaService.assignmentSubmitFiles.findMany({ where: { assignmentSubmitId: assignmentSubmitid } })
+        if (assignSubmitFile) {
             await this.deleteFiles(assignSubmitFile)
         }
-        return await this.prismaService.assignmentSubmit.delete({where:{id: assignmentSubmitid}})
+        return await this.prismaService.assignmentSubmit.delete({ where: { id: assignmentSubmitid } })
     }
 
     // async deleteFile(id: string, user: Users) {

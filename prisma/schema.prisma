@@ -40,7 +40,7 @@ model Users {
   // register Boolean @default(false)
   Groups   Groups[]
 
-  // AssignmentGrade AssignmentGrade[]
+  AssignmentGrade AssignmentGrade[]
   UserGroups      UserGroups?
   // Score        Score[]
   // Assignments   Assignments[]
@@ -111,7 +111,7 @@ model AssignmentSubmit {
   createAt              DateTime                @default(now())
   modifyAt              DateTime                @updatedAt
   AssignmentSubmitFiles AssignmentSubmitFiles[]
-  // AssignmentGrade       AssignmentGrade[]
+  AssignmentGrade       AssignmentGrade[]
 }
 
 model AssignmentSubmitFiles {
@@ -155,14 +155,14 @@ model Groups {
   AssignmentSubmit AssignmentSubmit[]
 }
 
-// model AssignmentGrade {
-//   id                 String @id @default(dbgenerated("gen_random_uuid()"))
-//   score              Float
-//   AssignmentSubmit AssignmentSubmit @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
-//   assignmentSubmitId String
-//   Users              Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   userId             String
-// }
+model AssignmentGrade {
+  id                 String @id @default(dbgenerated("gen_random_uuid()"))
+  // score              Float
+  AssignmentSubmit AssignmentSubmit @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
+  assignmentSubmitId String
+  Users              Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+}
 
 // model Subject {
 //   id          String @id @default(dbgenerated("gen_random_uuid()"))
