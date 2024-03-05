@@ -295,7 +295,8 @@ export class AssignmentSubmitService {
                         },
                         Users: {
                             connect: {id: user.studentId}
-                        }
+                        },
+                        score: 10
                     }
                 })
             })
