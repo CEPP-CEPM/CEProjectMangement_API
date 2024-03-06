@@ -60,7 +60,7 @@ export class AssignmentSubmitService {
                 studentId: user.id
             }
         })
-        const assignSubmit = await this.prismaService.assignmentSubmit.findMany({
+        const assignSubmit = await this.prismaService.assignmentSubmit.findFirst({
             where: {
                 groupId: group.groupId,
                 assignmentId: assignId
