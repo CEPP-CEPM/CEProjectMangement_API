@@ -108,7 +108,7 @@ export class AssignmentSubmitService {
 
     async createAssignmentSubmit(files: BufferedFile[], createAssignmentSubmitDto: CreateAssignmentSubmitDto, user: Users) {
         try {
-            console.log(files)
+            // console.log(files)
             const assignment = await this.prismaService.assignments.findUnique({
                 where: { id: createAssignmentSubmitDto.assignmentId },
             });
@@ -148,9 +148,9 @@ export class AssignmentSubmitService {
             //     })
             // )
             const uploadFiles = await this.uploadFiles(files)
+            console.log(uploadFiles)
             await Promise.all(
                 uploadFiles.map(async (file) => {
-                    console.log(file)
                     const assignmentFile = await this.prismaService.assignmentSubmitFiles.create({
                         data: {
                             bucket: file.bucketName,

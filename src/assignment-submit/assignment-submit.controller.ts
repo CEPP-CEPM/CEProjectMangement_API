@@ -53,7 +53,8 @@ export class AssignmentSubmitController {
         files: BufferedFile[],
         @Body() createAssignmentSubmit: CreateAssignmentSubmitDto,
         @Request() req
-    ) {        
+    ) {
+        // console.log(files);
         if (files != undefined && files.length > 0) {
             return await this.assignmentSubmitService.createAssignmentSubmit(
                 files,
