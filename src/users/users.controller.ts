@@ -27,8 +27,9 @@ export class UsersController {
     }
 
     @Post()
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('files'))
     async addUsers(@UploadedFile() file: Express.Multer.File) {
+        console.log(file);
         return await this.usersService.addUsers(file)
     }
 
