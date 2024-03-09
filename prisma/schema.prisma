@@ -119,6 +119,7 @@ model AssignmentSubmitFiles {
   AssignmentSubmit   AssignmentSubmit @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
   assignmentSubmitId String
   name               String
+  originalName       String
   bucket             String
   createAt           DateTime         @default(now())
 }
@@ -156,11 +157,11 @@ model Groups {
 }
 
 model AssignmentGrade {
-  id                 String @id @default(dbgenerated("gen_random_uuid()"))
+  id                 String           @id @default(dbgenerated("gen_random_uuid()"))
   score              Float
-  AssignmentSubmit AssignmentSubmit @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
+  AssignmentSubmit   AssignmentSubmit @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
   assignmentSubmitId String
-  Users              Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Users              Users            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String
 }
 

@@ -19,6 +19,11 @@ export class AssignmentSubmitService {
         return this.prismaService.assignments.findMany()
     }
 
+    async findAssignSubmitByProctor(assignId: string) {
+        const listAssignSubmit = await this.prismaService.assignmentSubmit.findMany({where:{status: "APPROVE"}})
+        return listAssignSubmit
+    }
+
     async findAssignSubmitByAvisorId(assignId: string, user: Users) {
         const myGroup = await this.prismaService.groups.findMany({ where: { createBy: user.id } })
         let allAssignSubmit = []
@@ -155,6 +160,7 @@ export class AssignmentSubmitService {
                         data: {
                             bucket: file.bucketName,
                             name: file.filename,
+                            originalName: file.originalName,
                             AssignmentSubmit: {
                                 connect: { id: assignmentSubmit.id }
                             }

@@ -22,6 +22,11 @@ export class AssignmentSubmitController {
         return await this.assignmentSubmitService.findAll()
     }
 
+    @Get('/proctor/:assignId')
+    async findAssignSubmitByProctor(@Param('assignId') assignId: string) {
+        return await this.assignmentSubmitService.findAssignSubmitByProctor(assignId)
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get('/advisor/:assignId')
     async findAssignSubmitByAvisorId(@Param('assignId') assignId: string, @Request() req) {
