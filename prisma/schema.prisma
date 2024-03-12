@@ -126,7 +126,7 @@ model Groups {
 
 model AssignmentGrade {
   id                 String           @id @default(dbgenerated("gen_random_uuid()"))
-  score              Float
+  // score              Float
   AssignmentSubmit   AssignmentSubmit @relation(fields: [assignmentSubmitId], references: [id], onDelete: Cascade)
   assignmentSubmitId String
   Users              Users            @relation(fields: [userId], references: [id], onDelete: Cascade)

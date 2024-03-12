@@ -160,7 +160,7 @@ export class AssignmentSubmitService {
                         data: {
                             bucket: file.bucketName,
                             name: file.filename,
-                            originalName: file.originalName,
+                            // originalName: file.originalName,
                             AssignmentSubmit: {
                                 connect: { id: assignmentSubmit.id }
                             }
@@ -302,7 +302,7 @@ export class AssignmentSubmitService {
                         Users: {
                             connect: {id: user.studentId}
                         },
-                        score: 10
+                        // score: 10
                     }
                 })
             })

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Request, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
 import { CreateAnnouncementDto } from './dto/CreateAnnouncement.dto';
 import { UpdateAnnouncementDto } from './dto/UpdateAnnouncement.dto';
@@ -28,7 +28,7 @@ export class AnnouncementController {
     @Post()
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))
-    async createAnnouncement(@UploadedFiles() files: BufferedFile[], @Body() createAnnouncementDto: CreateAnnouncementDto) {
+    async createAnnouncement(@UploadedFiles() files: BufferedFile[], @Body() createAnnouncementDto: CreateAnnouncementDto, @Request() req) {
         return await this.announcementService.createAnnouncement(createAnnouncementDto, files)
     }
 
