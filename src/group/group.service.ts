@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
 import { UpdateGroupDto } from './dto/UpdateGroup.dto';
+import { Users } from '@prisma/client';
 
 @Injectable()
 export class GroupService {
@@ -46,6 +47,13 @@ export class GroupService {
             })
         }) )
         return member
+    }
+
+    async checkJoinByStudent(user: Users) {
+        console.log(user);
+        
+        const userGroup = await this.prismaService.userGroups.findUnique({where:{studentId:user.id}})
+        return userGroup.join
     }
 
     async create(createGroupDto: CreateGroupDto) {

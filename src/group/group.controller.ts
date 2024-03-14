@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
 import { UpdateGroupDto } from './dto/UpdateGroup.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('group')
 @Controller('group')
@@ -33,6 +34,12 @@ export class GroupController {
     @Get('student/:groupId')
     async findMemberByGroupId(@Param('groupId') groupId: string) {
         return await this.groupService.findMemberByGroupId(groupId)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('student/check/1')
+    async check(@Request() req) {
+        return await this.groupService.checkJoinByStudent(req.user)
     }
 
     @Post()

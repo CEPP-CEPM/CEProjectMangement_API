@@ -69,6 +69,8 @@ export class AssignmentSubmitService {
             where: {
                 groupId: group.groupId,
                 assignmentId: assignId
+            },include:{
+                AssignmentSubmitFiles:true
             }
         })
         // console.log(assignSubmit)
