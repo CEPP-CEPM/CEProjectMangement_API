@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
 import { UpdateGroupDto } from './dto/UpdateGroup.dto';
 import { Users } from '@prisma/client';
+import { use } from 'passport';
 
 @Injectable()
 export class GroupService {
@@ -172,4 +173,16 @@ export class GroupService {
         })
         return updateGroup
     }
+
+    async acceptGroup(user: Users){
+        const usergroup = await this.prismaService.userGroups.update({where:{
+            studentId: user.id
+        },
+        data: {
+            join: true
+        }
+    })
+        return usergroup
+    }
+
 }
