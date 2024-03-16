@@ -31,9 +31,10 @@ export class GroupController {
         return await this.groupService.findByAdvisorId(advisorId)
     }
 
-    @Get('student/:groupId')
-    async findMemberByGroupId(@Param('groupId') groupId: string) {
-        return await this.groupService.findMemberByGroupId(groupId)
+    @UseGuards(JwtAuthGuard)
+    @Get('student/member/1')
+    async findMemberByGroupId(@Request() req) {
+        return await this.groupService.findMemberByGroupId(req.user)
     }
 
     @UseGuards(JwtAuthGuard)
