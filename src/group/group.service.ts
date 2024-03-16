@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
 import { UpdateGroupDto } from './dto/UpdateGroup.dto';
@@ -41,7 +41,7 @@ export class GroupService {
     }
 
     async findMemberByGroupId(user: Users) {
-        const userGroup = await this.prismaService.userGroups.findUnique({where:{studentId: user.id}})
+        const userGroup = await this.prismaService.userGroups.findUnique({ where: { studentId: user.id } })
         const group = await this.prismaService.groups.findUnique({
             where: { id: userGroup.groupId },
             include: {
@@ -174,14 +174,26 @@ export class GroupService {
         return updateGroup
     }
 
-    async acceptGroup(user: Users){
-        const usergroup = await this.prismaService.userGroups.update({where:{
-            studentId: user.id
-        },
-        data: {
-            join: true
+    async acceptGroup(user: Users) {
+        const usergroup = await this.prismaService.userGroups.update({
+            where: {
+                studentId: user.id
+            },
+            data: {
+                join: true
+            }
+        })
+        return usergroup
+    }
+
+    async rejectGroup(user: Users) {
+        const checkJoin = await this.prismaService.userGroups.findUnique({where: {studentId: user.id}})
+        if(checkJoin.join) throw new BadRequestException()
+        const usergroup = await this.prismaService.userGroups.delete({ where: { studentId: user.id } })
+        const checkmember = await this.prismaService.userGroups.findFirst({ where: { groupId: usergroup.groupId } })
+        if (!checkmember) {
+            await this.prismaService.groups.delete({ where: { id: usergroup.groupId } })
         }
-    })
         return usergroup
     }
 
