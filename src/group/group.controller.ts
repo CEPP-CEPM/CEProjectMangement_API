@@ -32,13 +32,13 @@ export class GroupController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('student/member/1')
+    @Get('student/member')
     async findMemberByGroupId(@Request() req) {
         return await this.groupService.findMemberByGroupId(req.user)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('student/check/1')
+    @Get('student/check')
     async check(@Request() req) {
         return await this.groupService.checkJoinByStudent(req.user)
     }
@@ -54,13 +54,13 @@ export class GroupController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('/student/join')
+    @Patch('/student/invite')
     async acceptGroup(@Request() req){
         return await this.groupService.acceptGroup(req.user)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('/student/reject')
+    @Delete('/student/invite')
     async rejectGroup(@Request() req){
         return await this.groupService.rejectGroup(req.user)
     }
