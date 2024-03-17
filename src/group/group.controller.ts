@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/CreateGroup.dto';
@@ -35,10 +35,16 @@ export class GroupController {
         return await this.groupService.findByAdvisorId(advisorId)
     }
 
-    @Get('student/:groupId')
     @UseGuards(JwtAuthGuard)
-    async findMemberByGroupId(@Param('groupId') groupId: string) {
-        return await this.groupService.findMemberByGroupId(groupId)
+    @Get('student/member')
+    async findMemberByGroupId(@Request() req) {
+        return await this.groupService.findMemberByGroupId(req.user)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('student/check')
+    async check(@Request() req) {
+        return await this.groupService.checkJoinByStudent(req.user)
     }
 
     @Post()
@@ -51,5 +57,17 @@ export class GroupController {
     @UseGuards(JwtAuthGuard)
     async update(@Param('groupId') groupId: string, @Body() updateGroupDto: UpdateGroupDto) {
         return await this.groupService.update(groupId, updateGroupDto)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('/student/invite')
+    async acceptGroup(@Request() req){
+        return await this.groupService.acceptGroup(req.user)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('/student/invite')
+    async rejectGroup(@Request() req){
+        return await this.groupService.rejectGroup(req.user)
     }
 }
