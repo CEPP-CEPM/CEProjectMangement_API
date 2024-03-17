@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { deleteAnnouncementsFiles } from 'src/interfaces/deleteFiles.interface';
+import { CreateAnnouncementDto } from './dto/CreateAnnouncement.dto';
 
 @Injectable()
 export class AnnouncementService {
@@ -28,7 +29,13 @@ export class AnnouncementService {
         })
     }
 
-    async createAnnouncement(createAnnouncementDto: Prisma.AnnouncementsCreateInput, files: BufferedFile[]) {
+    async createAnnouncement(createAnnouncementDto: CreateAnnouncementDto, files: BufferedFile[]) {
+        const subject = await this.prismaService.subject.findFirst({
+            where: {
+                subjectName : createAnnouncementDto.subjectName
+            }
+        })
+
         if (files && files.length > 0) {
             const announcement = await this.prismaService.announcements.create({
                 data: {
@@ -37,6 +44,9 @@ export class AnnouncementService {
                     // Advisor: {
                         // connect: { id: user.id },
                     // },
+                    Subject: {
+                        connect: { id: },
+                    }
                 },
                 include: {
                     // Advisor: true,

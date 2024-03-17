@@ -5,6 +5,14 @@ CREATE TYPE "Role" AS ENUM ('STUDENT', 'ADVISOR', 'PROCTOR');
 CREATE TYPE "AssignmentStatus" AS ENUM ('NOTSEND', 'SEND', 'TURNINLATE', 'REJECT', 'APPROVE');
 
 -- CreateTable
+CREATE TABLE "Subject" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "subjectName" TEXT NOT NULL,
+
+    CONSTRAINT "Subject_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Users" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "email" TEXT NOT NULL,
@@ -12,6 +20,7 @@ CREATE TABLE "Users" (
     "lastname" VARCHAR(50),
     "tel" VARCHAR(10),
     "role" "Role" NOT NULL DEFAULT 'STUDENT',
+    "subjectId" TEXT NOT NULL,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );
@@ -29,6 +38,7 @@ CREATE TABLE "UserGroups" (
 -- CreateTable
 CREATE TABLE "Announcements" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "subjectId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,6 +51,7 @@ CREATE TABLE "Announcements" (
 CREATE TABLE "Assignments" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "title" TEXT NOT NULL,
+    "subjectId" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "dueAt" TIMESTAMP(3) NOT NULL,
@@ -66,6 +77,7 @@ CREATE TABLE "AssignmentSubmitFiles" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "assignmentSubmitId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "originalName" TEXT NOT NULL,
     "bucket" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -107,8 +119,6 @@ CREATE TABLE "Groups" (
 -- CreateTable
 CREATE TABLE "AssignmentGrade" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
-<<<<<<<< HEAD:prisma/migrations/20240305212208_init/migration.sql
-    "score" DOUBLE PRECISION NOT NULL,
     "assignmentSubmitId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
 
@@ -121,28 +131,20 @@ CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "UserGroups_studentId_key" ON "UserGroups"("studentId");
 
-========
-    "userId" TEXT NOT NULL,
-    "assignmentSubmitId" TEXT NOT NULL,
+-- AddForeignKey
+ALTER TABLE "Users" ADD CONSTRAINT "Users_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-    CONSTRAINT "AssignmentGrade_pkey" PRIMARY KEY ("id")
-);
-
--- CreateIndex
-CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "UserGroups_studentId_key" ON "UserGroups"("studentId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "AssignmentGrade_userId_key" ON "AssignmentGrade"("userId");
-
->>>>>>>> feat/teeAPI:prisma/migrations/20240305123857_init/migration.sql
 -- AddForeignKey
 ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Announcements" ADD CONSTRAINT "Announcements_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Assignments" ADD CONSTRAINT "Assignments_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "AssignmentSubmit" ADD CONSTRAINT "AssignmentSubmit_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -163,14 +165,7 @@ ALTER TABLE "AnnouncementFiles" ADD CONSTRAINT "AnnouncementFiles_announcementId
 ALTER TABLE "Groups" ADD CONSTRAINT "Groups_createBy_fkey" FOREIGN KEY ("createBy") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-<<<<<<<< HEAD:prisma/migrations/20240305212208_init/migration.sql
 ALTER TABLE "AssignmentGrade" ADD CONSTRAINT "AssignmentGrade_assignmentSubmitId_fkey" FOREIGN KEY ("assignmentSubmitId") REFERENCES "AssignmentSubmit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "AssignmentGrade" ADD CONSTRAINT "AssignmentGrade_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-========
-ALTER TABLE "AssignmentGrade" ADD CONSTRAINT "AssignmentGrade_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "AssignmentGrade" ADD CONSTRAINT "AssignmentGrade_assignmentSubmitId_fkey" FOREIGN KEY ("assignmentSubmitId") REFERENCES "AssignmentSubmit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
->>>>>>>> feat/teeAPI:prisma/migrations/20240305123857_init/migration.sql

@@ -24,20 +24,29 @@ enum AssignmentStatus {
   APPROVE
 }
 
+model Subject {
+  id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  subjectName     String          
+  Users           Users[]
+  Announcements   Announcements[]
+  Assignments     Assignments[]
+}
+
 model Users {
-  id       String  @id @default(dbgenerated("gen_random_uuid()"))
-  email    String  @unique
-  name     String? @db.VarChar(50)
-  lastname String? @db.VarChar(50)
-  tel      String? @db.VarChar(10)
-  role     Role    @default(STUDENT)
-  Groups   Groups[]
+  id          String     @id @default(dbgenerated("gen_random_uuid()"))
+  email       String     @unique
+  name        String?    @db.VarChar(50)
+  lastname    String?    @db.VarChar(50)
+  tel         String?    @db.VarChar(10)
+  role        Role       @default(STUDENT)
+  Subject     Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade)    
+  subjectId   String
+  Groups      Groups[]
 
   AssignmentGrade         AssignmentGrade[]
   UserGroups    UserGroups?
   // Assignments   Assignments[]
   // Announcements Announcements[]
-  // Subject       Subject?
 }
 
 model UserGroups {
@@ -53,6 +62,8 @@ model Announcements {
   id                String              @id @default(dbgenerated("gen_random_uuid()"))
   // Proctor           Users               @relation(fields: [proctorId], references: [id], onDelete: Cascade)
   // proctorId         String
+  Subject           Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId         String              
   title             String
   description       String
   createAt          DateTime            @default(now())
@@ -65,12 +76,15 @@ model Assignments {
   title            String
   // Proctor          Users              @relation(fields: [proctorId], references: [id], onDelete: Cascade)
   // proctorId        String
+  Subject          Subject            @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId        String
   description      String
   createAt         DateTime           @default(now())
   dueAt            DateTime
-  modifyAt         DateTime            @updatedAt()
+  modifyAt         DateTime           @updatedAt()
   AssignmentFiles  AssignmentFiles[]
   AssignmentSubmit AssignmentSubmit[]
+  
 }
 
 model AssignmentSubmit {
@@ -132,10 +146,3 @@ model AssignmentGrade {
   Users              Users            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String
 }
-
-// model Subject {
-//   id          String @id @default(dbgenerated("gen_random_uuid()"))
-//   SubjectName String
-//   Users       Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   userId      String @unique
-// }
