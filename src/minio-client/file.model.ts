@@ -23,8 +23,4 @@ export interface StoredFileMetadata {
 }
 
 export type AppMimeType =
-  | 'image/png'
-  | 'image/jpg'
-  | 'image/jpeg'
-  | 'application/pdf'
-  | 'application/msword';
+  | 'application/pdf';

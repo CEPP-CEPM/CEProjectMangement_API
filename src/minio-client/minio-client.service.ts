@@ -24,11 +24,7 @@ export class MinioClientService {
   ) {
     if (
       !(
-        file.mimetype.includes('jpeg') ||
-        file.mimetype.includes('png') ||
-        file.mimetype.includes('jpg') ||
-        file.mimetype.includes('pdf') ||
-        file.mimetype.includes('msword')
+        file.mimetype.includes('pdf')
       )
     ) {
       throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
