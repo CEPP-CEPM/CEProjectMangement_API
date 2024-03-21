@@ -4,6 +4,8 @@ import { BufferedFile } from 'src/minio-client/file.model';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { deleteAssignmentsFiles } from 'src/interfaces/deleteFiles.interface';
+import { CreateAssignmentDto } from './dto/CreateAssignment.dto';
+import { Users } from '@prisma/client';
 
 @Injectable()
 export class AssignmentService {
@@ -18,7 +20,7 @@ export class AssignmentService {
     }
 
     async findOne(id: string) {
-        return this.prismaService.assignments.findUnique({
+        const assignment = await this.prismaService.assignments.findUnique({
             where : {
                 id: id
             },
@@ -26,15 +28,38 @@ export class AssignmentService {
                 AssignmentFiles: true
             }
         })
+        const proctor = await this.prismaService.users.findUnique({
+            where : {
+                id: assignment.proctorId
+            }
+        })
+        return [assignment, proctor]
     }
 
-    async create(createAssignmentDto: Prisma.AssignmentsCreateInput, files: BufferedFile[]) {
+    async create(createAssignmentDto: CreateAssignmentDto, files: BufferedFile[], user: Users) {
+
+        const proctor = await this.prismaService.users.findUnique({ where: {id: user.id}})
+        console.log(proctor);
+        
+
+        const subject = await this.prismaService.subject.findFirst({
+            where: {
+                subjectName: createAssignmentDto.subjectName
+            }
+        })
+
         if (files && files.length > 0) {
             const assignment = await this.prismaService.assignments.create({
                 data: {
                     title: createAssignmentDto.title,
                     description: createAssignmentDto.description,
-                    dueAt: createAssignmentDto.dueAt
+                    dueAt: createAssignmentDto.dueAt,
+                    Subject: {
+                        connect: {id: subject.id}
+                    },
+                    Users: {
+                        connect: {id: proctor.id}
+                    }
                 },
                 include: {
                     AssignmentFiles: true
@@ -61,7 +86,13 @@ export class AssignmentService {
                 data: {
                     title: createAssignmentDto.title,
                     description: createAssignmentDto.description,
-                    dueAt: createAssignmentDto.dueAt
+                    dueAt: createAssignmentDto.dueAt,
+                    Subject: {
+                        connect: {id: subject.id}
+                    },
+                    Users: {
+                        connect: {id: proctor.id}
+                    }
                 },
                 include: {
                     AssignmentFiles: true

@@ -29,7 +29,7 @@ export class AnnouncementController {
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))
     async createAnnouncement(@UploadedFiles() files: BufferedFile[], @Body() createAnnouncementDto: CreateAnnouncementDto, @Request() req) {
-        return await this.announcementService.createAnnouncement(createAnnouncementDto, files)
+        return await this.announcementService.createAnnouncement(createAnnouncementDto, files, req.user)
     }
 
     @Put(':id')

@@ -19,7 +19,7 @@ export class UsersService {
         return await this.prismaService.users.findMany({where: {role: 'ADVISOR'}})
     }
 
-    async addUsers(file: Express.Multer.File) {
+    async addUsers(file: Express.Multer.File, subjectName: string) {
         let header = true
         const stream = Readable.from(file.buffer)
         const csvData = parse(stream, {
@@ -30,12 +30,21 @@ export class UsersService {
                 console.log("Row: ", row.data);
                 if (!header) {
                     try {
+                        const subject = await this.prismaService.subject.findFirst({
+                            where: {
+                                subjectName: subjectName
+                            }
+                        })
+
                         await this.prismaService.users.create({
                             data: {
                                 email: row.data[1],
                                 name: row.data[2],
                                 lastname: row.data[3],
-                                role: row.data[4]
+                                role: row.data[4],
+                                Subject: {
+                                    connect: {id: subject.id}
+                                }
                             }
                         })
                     } catch (error) {

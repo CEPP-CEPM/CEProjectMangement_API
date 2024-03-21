@@ -5,6 +5,7 @@ import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { deleteAnnouncementsFiles } from 'src/interfaces/deleteFiles.interface';
 import { CreateAnnouncementDto } from './dto/CreateAnnouncement.dto';
+import { Users } from '@prisma/client';
 
 @Injectable()
 export class AnnouncementService {
@@ -19,7 +20,7 @@ export class AnnouncementService {
     }
 
     async findOneAnnouncement(id: string) {
-        return await this.prismaService.announcements.findUnique({
+        const announcement = await this.prismaService.announcements.findUnique({
             where : {
                 id: id
             },
@@ -27,9 +28,20 @@ export class AnnouncementService {
                 AnnouncementFiles: true
             }
         })
+        const proctor = await this.prismaService.users.findUnique({
+            where : {
+                id: announcement.proctorId
+            }
+        })
+        return [announcement, proctor]
     }
 
-    async createAnnouncement(createAnnouncementDto: CreateAnnouncementDto, files: BufferedFile[]) {
+    async createAnnouncement(createAnnouncementDto: CreateAnnouncementDto, files: BufferedFile[], user: Users) {
+        const proctor = await this.prismaService.users.findUnique({
+            where: {
+                id: user.id
+            }
+        })
         const subject = await this.prismaService.subject.findFirst({
             where: {
                 subjectName : createAnnouncementDto.subjectName
@@ -41,15 +53,14 @@ export class AnnouncementService {
                 data: {
                     title: createAnnouncementDto.title,
                     description: createAnnouncementDto.description,
-                    // Advisor: {
-                        // connect: { id: user.id },
-                    // },
+                    Users: {
+                        connect: { id: proctor.id },
+                    },
                     Subject: {
-                        connect: { id: },
+                        connect: { id: subject.id},
                     }
                 },
                 include: {
-                    // Advisor: true,
                     AnnouncementFiles: true,
                 },
             });
@@ -74,12 +85,14 @@ export class AnnouncementService {
                 data: {
                     title: createAnnouncementDto.title,
                     description: createAnnouncementDto.description,
-                    // Advisor: {
-                        // connect: { id: user.id },
-                    // },
+                    Users: {
+                        connect: { id: proctor.id },
+                    },
+                    Subject: {
+                        connect: { id: subject.id},
+                    }
                 },
                 include: {
-                    // Advisor: true,
                     AnnouncementFiles: false,
                 },
             });

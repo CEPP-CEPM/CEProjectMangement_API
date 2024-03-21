@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AssignmentService } from './assignment.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -33,8 +33,8 @@ export class AssignmentController {
     @Post()
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))
-    async create(@UploadedFiles() files: BufferedFile[], @Body() createAssignmentDto: CreateAssignmentDto) {
-        return await this.assignmentService.create(createAssignmentDto, files)
+    async create(@UploadedFiles() files: BufferedFile[], @Body() createAssignmentDto: CreateAssignmentDto, @Request() req) {
+        return await this.assignmentService.create(createAssignmentDto, files, req.user)
     }
 
     @Put(':id')

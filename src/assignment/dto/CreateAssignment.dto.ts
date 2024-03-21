@@ -12,6 +12,10 @@ export class CreateAssignmentDto {
 
     @ApiProperty()
     @IsNotEmpty()
+    subjectName: string
+
+    @ApiProperty()
+    @IsNotEmpty()
     @IsDateString()
     dueAt: Date
 }

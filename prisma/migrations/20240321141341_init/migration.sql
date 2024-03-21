@@ -51,6 +51,7 @@ CREATE TABLE "Announcements" (
 CREATE TABLE "Assignments" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "title" TEXT NOT NULL,
+    "proctorId" TEXT NOT NULL,
     "subjectId" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -142,6 +143,9 @@ ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_studentId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "Announcements" ADD CONSTRAINT "Announcements_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Assignments" ADD CONSTRAINT "Assignments_proctorId_fkey" FOREIGN KEY ("proctorId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Assignments" ADD CONSTRAINT "Assignments_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
