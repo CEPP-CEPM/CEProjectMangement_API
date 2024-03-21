@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateSubjectDto } from './dto/createSubject.dto';
 
 @ApiTags('subjects')
 @Controller('subjects')
@@ -10,16 +11,16 @@ export class SubjectsController {
 
     @Get()
     async findAllSubjects() {
-        
+        return await this.subjectsService.findAllSubject()
     }
 
     @Post()
-    async createSubject() {
-
+    async createSubject(@Body() createSubjectDto: CreateSubjectDto) {
+        return await this.subjectsService.createSubject(createSubjectDto)
     }
 
     @Delete(':id')
-    async deleteById() {
-        
+    async deleteById(@Param('id') id: string) {
+        return await this.subjectsService.deleteSubject(id)
     }
 }
