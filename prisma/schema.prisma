@@ -115,8 +115,9 @@ model AssignmentFiles {
   Assignments  Assignments @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   assignmentId String
   name         String
-  bucket       String
-  createAt     DateTime    @default(now())
+  originalName String
+  bucket   String
+  createAt DateTime @default(now())
 }
 
 model AnnouncementFiles {
@@ -124,6 +125,7 @@ model AnnouncementFiles {
   Announcements  Announcements @relation(fields: [announcementId], references: [id], onDelete: Cascade)
   announcementId String
   name           String
+  originalName   String
   bucket         String
   createAt       DateTime      @default(now())
 }

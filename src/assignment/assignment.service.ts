@@ -72,6 +72,7 @@ export class AssignmentService {
                         data: {
                             bucket: file.bucketName,
                             name: file.filename,
+                            originalName: file.originalName,
                             Assignments: {
                                 connect: { id: assignment.id }
                             }
@@ -125,6 +126,7 @@ export class AssignmentService {
                         data: {
                             bucket: fileuploadFile.bucketName,
                             name: fileuploadFile.filename,
+                            originalName: fileuploadFile.originalName,
                             Assignments: { connect: { id: id } },
                         }
                     })

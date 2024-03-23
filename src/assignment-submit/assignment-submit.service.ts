@@ -48,17 +48,6 @@ export class AssignmentSubmitService {
         }))
     }
 
-    // async findOne(id: string) {
-    //     return this.prismaService.assignments.findUnique({
-    //         where: {
-    //             id: id
-    //         },
-    //         include: {
-    //             AssignmentFiles: true
-    //         }
-    //     })
-    // }
-
     async findOne(assignId: string, user: Users) {
         const group = await this.prismaService.userGroups.findUnique({
             where: {

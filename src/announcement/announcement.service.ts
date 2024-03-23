@@ -67,10 +67,12 @@ export class AnnouncementService {
             const uploadFiles = await this.uploadFiles(files);
             await Promise.all(
                 uploadFiles.map(async (fileuploadFile) => {
+                    console.log(fileuploadFile);
                     const announcementFile = await this.prismaService.announcementFiles.create({
                         data: {
                             bucket: fileuploadFile.bucketName,
                             name: fileuploadFile.filename,
+                            originalName:fileuploadFile.originalName,
                             Announcements: {
                                 connect: { id: announcement.id },
                             },
@@ -117,11 +119,12 @@ export class AnnouncementService {
         if (files && files.length > 0) {
             const uploadFiles = await this.uploadFiles(files);
             await Promise.all(
-                uploadFiles.map(async (fileuploadFile) => {
+                uploadFiles.map(async (fileuploadFile) => {                    
                     const announcementFile = await this.prismaService.announcementFiles.create({
                         data: {
                             bucket: fileuploadFile.bucketName,
                             name: fileuploadFile.filename,
+                            originalName: fileuploadFile.originalName,
                             Announcements: { connect: { id: id } },
                         },
                     });
@@ -157,12 +160,11 @@ export class AnnouncementService {
             files.map(async (file) => {
                 const uploaded_file = await this.minioClientService.upload(
                 file,
-                'cepm',
+                'announcement',
                 );
                 return uploaded_file;
             }),
         );
-    
         return uploaded_files;
     }
 }
