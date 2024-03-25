@@ -41,7 +41,8 @@ export class UsersService {
                                 email: row.data[1],
                                 name: row.data[2],
                                 lastname: row.data[3],
-                                role: row.data[4],
+                                tel: row.data[4],
+                                role: row.data[5],
                                 Subject: {
                                     connect: {id: subject.id}
                                 }

@@ -37,8 +37,13 @@ export class GroupController {
 
     @UseGuards(JwtAuthGuard)
     @Get('student/member')
-    async findMemberByGroupId(@Request() req) {
-        return await this.groupService.findMemberByGroupId(req.user)
+    async findMemberByStudent(@Request() req) {
+        return await this.groupService.findMemberByStudent(req.user)
+    }
+
+    @Get('proctor/student/:groupId')
+    async findMemberByGroupId(@Param('groupId') groupId: string) {
+        return await this.groupService.findMemberByGroupId(groupId)
     }
 
     @UseGuards(JwtAuthGuard)

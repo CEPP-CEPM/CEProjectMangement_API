@@ -19,9 +19,8 @@ export class AssignmentSubmitService {
         return this.prismaService.assignments.findMany()
     }
 
-    async findAssignSubmitByProctor(assignId: string) {
-        const listAssignSubmit = await this.prismaService.assignmentSubmit.findMany({where:{status: "APPROVE"}})
-        return listAssignSubmit
+    async findAllApproveByProctor(assignId: string) {
+        return await this.prismaService.assignmentSubmit.findMany({ where: { assignmentId: assignId, status: "APPROVE" },include:{Groups:true} })
     }
 
     async findAssignSubmitByAvisorId(assignId: string, user: Users) {
@@ -58,8 +57,8 @@ export class AssignmentSubmitService {
             where: {
                 groupId: group.groupId,
                 assignmentId: assignId
-            },include:{
-                AssignmentSubmitFiles:true
+            }, include: {
+                AssignmentSubmitFiles: true
             }
         })
         // console.log(assignSubmit)
@@ -282,16 +281,16 @@ export class AssignmentSubmitService {
         const assignSubmit = await this.prismaService.assignmentSubmit.findUnique({ where: { id: assignSubmitid } })
         const group = await this.prismaService.groups.findUnique({ where: { id: assignSubmit.groupId } })
         if (group.createBy != user.id) throw new ForbiddenException
-        const usergroup = await this.prismaService.userGroups.findMany({where: {groupId: group.id}})
+        const usergroup = await this.prismaService.userGroups.findMany({ where: { groupId: group.id } })
         await Promise.all(
-            usergroup.map(async(user) =>{
+            usergroup.map(async (user) => {
                 await this.prismaService.assignmentGrade.create({
-                    data:{
-                        AssignmentSubmit:{
-                            connect: {id: assignSubmitid}
+                    data: {
+                        AssignmentSubmit: {
+                            connect: { id: assignSubmitid }
                         },
                         Users: {
-                            connect: {id: user.studentId}
+                            connect: { id: user.studentId }
                         },
                         // score: 10
                     }

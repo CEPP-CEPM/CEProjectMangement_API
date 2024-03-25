@@ -25,6 +25,12 @@ export class AnnouncementController {
         return await this.announcementService.findOneAnnouncement(id)
     }
 
+    @Get('/subject/:subject')
+    @UseGuards(JwtAuthGuard)
+    async findBySubject(@Param('subject') subject: string) {
+        return await this.announcementService.findBySubject(subject)
+    }
+
     @Post()
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))

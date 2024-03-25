@@ -19,6 +19,20 @@ export class AssignmentService {
         return this.prismaService.assignments.findMany()
     }
 
+    async findBySubject(subject: string) {
+        const subjectInfo = await this.prismaService.subject.findFirst({
+            where: {
+                subjectName: subject
+            }
+        })
+
+        return this.prismaService.assignments.findMany({
+            where: {
+                subjectId: subjectInfo.id
+            }
+        })
+    }
+
     async findOne(id: string) {
         const assignment = await this.prismaService.assignments.findUnique({
             where : {
@@ -118,6 +132,11 @@ export class AssignmentService {
             }
         })
 
+        const filesInAssign = await this.prismaService.assignmentFiles.findMany({where:{assignmentId:id}})
+        await Promise.all(filesInAssign.map( async (file) =>{
+            await this.prismaService.assignmentFiles.delete({where:{id: file.id}})
+        }))
+        
         if (files && files.length > 0) {
             const uploadFiles = await this.uploadFiles(files)
             await Promise.all(

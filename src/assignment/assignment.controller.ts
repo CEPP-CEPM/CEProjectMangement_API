@@ -27,7 +27,12 @@ export class AssignmentController {
 
     @Get('student/:id')
     async findByStd() {
+    }
 
+    @Get('/subject/:subject')
+    @UseGuards(JwtAuthGuard)
+    async findBySubject(@Param('subject') subject: string) {
+        return await this.assignmentService.findBySubject(subject)
     }
 
     @Post()

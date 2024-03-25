@@ -38,6 +38,7 @@ CREATE TABLE "UserGroups" (
 -- CreateTable
 CREATE TABLE "Announcements" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "proctorId" TEXT NOT NULL,
     "subjectId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
@@ -90,6 +91,7 @@ CREATE TABLE "AssignmentFiles" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "assignmentId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "originalName" TEXT NOT NULL,
     "bucket" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -101,6 +103,7 @@ CREATE TABLE "AnnouncementFiles" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "announcementId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "originalName" TEXT NOT NULL,
     "bucket" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -140,6 +143,9 @@ ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_groupId_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "UserGroups" ADD CONSTRAINT "UserGroups_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Announcements" ADD CONSTRAINT "Announcements_proctorId_fkey" FOREIGN KEY ("proctorId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Announcements" ADD CONSTRAINT "Announcements_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;

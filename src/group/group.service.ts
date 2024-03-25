@@ -40,10 +40,22 @@ export class GroupService {
         return await this.prismaService.users.findUnique({ where: { id: group.createBy } })
     }
 
-    async findMemberByGroupId(user: Users) {
+    async findMemberByStudent(user: Users) {
         const userGroup = await this.prismaService.userGroups.findUnique({ where: { studentId: user.id } })
         const group = await this.prismaService.groups.findUnique({
             where: { id: userGroup.groupId },
+            include: {
+                Users: true,
+                UserGroups: { include: { Users: true } }
+            }
+        })
+        return group
+    }
+
+    async findMemberByGroupId(groupId: string) {
+        // const userGroup = await this.prismaService.userGroups.findUnique({ where: { studentId: user.id } })
+        const group = await this.prismaService.groups.findUnique({
+            where: { id: groupId },
             include: {
                 Users: true,
                 UserGroups: { include: { Users: true } }

@@ -36,17 +36,33 @@ export class AnnouncementService {
         return [announcement, proctor]
     }
 
+    async findBySubject(subject: string) {
+        const subjectInfo = await this.prismaService.subject.findFirst({
+            where: {
+                subjectName: subject
+            }
+        })
+
+        return this.prismaService.announcements.findMany({
+            where: {
+                subjectId: subjectInfo.id
+            }
+        })
+    }
+
     async createAnnouncement(createAnnouncementDto: CreateAnnouncementDto, files: BufferedFile[], user: Users) {
         const proctor = await this.prismaService.users.findUnique({
             where: {
                 id: user.id
             }
         })
+        
         const subject = await this.prismaService.subject.findFirst({
             where: {
                 subjectName : createAnnouncementDto.subjectName
             }
         })
+        console.log(createAnnouncementDto.subjectName);
 
         if (files && files.length > 0) {
             const announcement = await this.prismaService.announcements.create({
@@ -115,6 +131,10 @@ export class AnnouncementService {
                 AnnouncementFiles: true,
             },
         });
+        const filesInAnnounce = await this.prismaService.announcementFiles.findMany({where:{announcementId:id}})
+        await Promise.all(filesInAnnounce.map( async (file) =>{
+            await this.prismaService.announcementFiles.delete({where:{id: file.id}})
+        }))
 
         if (files && files.length > 0) {
             const uploadFiles = await this.uploadFiles(files);
