@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTagDto {
-    @IsString()
-    @IsNotEmpty()
-    tagname: string;
+  @IsString()
+  @IsNotEmpty()
+  tagname: string;
 }

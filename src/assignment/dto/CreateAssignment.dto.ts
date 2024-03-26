@@ -1,21 +1,21 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsNotEmpty } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsDateString, IsNotEmpty } from 'class-validator';
 
 export class CreateAssignmentDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    title: string
+  @ApiProperty()
+  @IsNotEmpty()
+  title: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    description: string
+  @ApiProperty()
+  @IsNotEmpty()
+  description: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    subjectName: string
+  @ApiProperty()
+  @IsNotEmpty()
+  subjectName: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsDateString()
-    dueAt: Date
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  dueAt: Date;
 }

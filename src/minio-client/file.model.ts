@@ -22,5 +22,4 @@ export interface StoredFileMetadata {
   fileSrc?: string;
 }
 
-export type AppMimeType =
-  | 'application/pdf';
+export type AppMimeType = 'application/pdf';

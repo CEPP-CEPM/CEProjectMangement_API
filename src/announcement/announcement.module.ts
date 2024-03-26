@@ -5,8 +5,8 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { MinioClientModule } from 'src/minio-client/minio-client.module';
 
 @Module({
-    imports: [PrismaModule, MinioClientModule],
-    providers: [AnnouncementService],
-    controllers: [AnnouncementController],
+  imports: [PrismaModule, MinioClientModule],
+  providers: [AnnouncementService],
+  controllers: [AnnouncementController],
 })
 export class AnnouncementModule {}

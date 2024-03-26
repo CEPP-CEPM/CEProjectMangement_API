@@ -1,0 +1,47 @@
+name: production-deploy
+on:
+  push:
+    branches: [main]
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+  GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+
+
+jobs:
+  lintTest:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Clone Repo ⬇️
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: npm install
+
+      - name: Running Lint
+        run: |
+          npm run lint ||
+          (
+              echo '🔨❌ Yoo, you have a problem in your code. Check linter 🔨❌
+                  Run yarn lint, add changes and try commit again.';
+              false;
+          )
+  deploy:
+    runs-on: self-hosted
+    needs: [lintTest]
+    steps:
+      - name: Copy repository
+        uses: actions/checkout@v3
+
+      - name: Build the docker-compose stack
+        run: docker compose up -d --build
+        
+      - name: Clear all docker unused cache
+        run: docker system prune -af
+
+      
+      

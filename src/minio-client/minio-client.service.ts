@@ -1,6 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
-import { Stream } from 'stream';
 import { config } from './config';
 import { BufferedFile } from './file.model';
 import * as crypto from 'crypto';
@@ -22,19 +21,15 @@ export class MinioClientService {
     file: BufferedFile,
     baseBucket: string = this.baseBucket,
   ) {
-    if (
-      !(
-        file.mimetype.includes('pdf')
-      )
-    ) {
+    if (!file.mimetype.includes('pdf')) {
       throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
     }
-    let temp_filename = Date.now().toString();
-    let hashedFileName = crypto
+    const temp_filename = Date.now().toString();
+    const hashedFileName = crypto
       .createHash('md5')
       .update(temp_filename)
       .digest('hex');
-    let ext = file.originalname.substring(
+    const ext = file.originalname.substring(
       file.originalname.lastIndexOf('.'),
       file.originalname.length,
     );
@@ -42,7 +37,7 @@ export class MinioClientService {
       'Content-Type': file.mimetype,
       'X-Amz-Meta-Testing': 1234,
     };
-    let filename = hashedFileName + ext;
+    const filename = hashedFileName + ext;
     const fileName: string = `${filename}`;
     const fileBuffer = file.buffer;
     this.client.putObject(
@@ -52,11 +47,7 @@ export class MinioClientService {
       file.size,
       metaData,
       function (err) {
-        if (err)
-          throw new HttpException(
-            err,
-            HttpStatus.BAD_REQUEST,
-          );
+        if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
       },
     );
 
@@ -64,7 +55,7 @@ export class MinioClientService {
       url: `${config.MINIO_ENDPOINT}:${config.MINIO_PORT}/${baseBucket}/${filename}`,
       bucketName: baseBucket,
       filename: fileName,
-      originalName: file.originalname
+      originalName: file.originalname,
     };
   }
 

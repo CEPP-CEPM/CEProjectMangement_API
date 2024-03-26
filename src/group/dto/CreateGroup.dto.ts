@@ -1,17 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateGroupDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  topic: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    topic: string
+  @ApiProperty()
+  @IsNotEmpty()
+  tag: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    tag: string
-
-    @ApiProperty()
-    @IsNotEmpty()
-    userGroup: string[]
+  @ApiProperty()
+  @IsNotEmpty()
+  userGroup: string[];
 }

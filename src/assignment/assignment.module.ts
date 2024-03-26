@@ -7,6 +7,6 @@ import { MinioClientModule } from 'src/minio-client/minio-client.module';
 @Module({
   imports: [PrismaModule, MinioClientModule],
   controllers: [AssignmentController],
-  providers: [AssignmentService]
+  providers: [AssignmentService],
 })
 export class AssignmentModule {}
