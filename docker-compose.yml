@@ -5,5 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_SECRET
+      - MINIO_ENDPOINT
+      - MINIO_CONSOLE
+      - MINIO_PORT
+      - MINIO_ACCESSKEY
+      - MINIO_SECRETKEY
+      - MINIO_SSL
+      - MINIO_BASEBUCKET
     ports:
       - 3001:5000
