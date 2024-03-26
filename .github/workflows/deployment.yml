@@ -50,7 +50,6 @@ jobs:
         run: |
             docker exec projectManagementBackend npm run prisma:prod
          
-
       - name: Clear all docker unused cache
         run: docker system prune -af
 
