@@ -25,8 +25,6 @@ COPY --chown=node:node . .
 
 RUN npm run build
 
-ENV NODE_ENV production
-
 RUN npm i --only=production --ignore-scripts && npm cache clean --force
 
 USER node
