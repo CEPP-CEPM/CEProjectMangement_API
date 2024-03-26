@@ -18,4 +18,4 @@ services:
       - MINIO_BASEBUCKET
     restart: always
     ports:
-      - 3001:5000
+      - 3001:3001
