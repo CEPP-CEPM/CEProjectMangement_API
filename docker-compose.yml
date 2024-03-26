@@ -17,5 +17,4 @@ services:
       - MINIO_SSL
       - MINIO_BASEBUCKET
     restart: always
-    ports:
-      - 3001:3001
+    network_mode: host
