@@ -16,5 +16,6 @@ services:
       - MINIO_SECRETKEY
       - MINIO_SSL
       - MINIO_BASEBUCKET
+    restart: always
     ports:
       - 3001:5000
