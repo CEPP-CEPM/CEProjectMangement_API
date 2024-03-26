@@ -17,11 +17,11 @@ export class GroupController {
         return await this.groupService.findAll()
     }
 
-    @Get('student/advisor/:groupId')
-    @UseGuards(JwtAuthGuard)
-    async findAdvisorGroup(@Param('groupId') groupId: string) {
-        return await this.groupService.findByAdvisorId(groupId)
-    }
+    // @Get('student/advisor/:groupId')
+    // @UseGuards(JwtAuthGuard)
+    // async findAdvisorGroup(@Param('groupId') groupId: string) {
+    //     return await this.groupService.findByAdvisorId(groupId)
+    // }
 
     @Get(':groupId')
     @UseGuards(JwtAuthGuard)
@@ -29,10 +29,12 @@ export class GroupController {
         return await this.groupService.findByGroupId(groupId)
     }
 
-    @Get('advisor/:advisorId')
+    @Get('advisor/1')
     @UseGuards(JwtAuthGuard)
-    async findByAdvisorId(@Param('advisorId') advisorId: string) {
-        return await this.groupService.findByAdvisorId(advisorId)
+    async findByAdvisorId(@Request() req) {
+        console.log("test");
+        
+        return await this.groupService.findByAdvisorId(req.user)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -54,8 +56,8 @@ export class GroupController {
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    async create(@Body() createGroupDto: CreateGroupDto) {
-        return await this.groupService.create(createGroupDto)
+    async create(@Body() createGroupDto: CreateGroupDto,@Request() req) {
+        return await this.groupService.create(createGroupDto,req.user)
     }
 
     @Put(':groupId')

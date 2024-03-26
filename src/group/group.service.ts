@@ -27,10 +27,10 @@ export class GroupService {
         })
     }
 
-    async findByAdvisorId(id: string) {
+    async findByAdvisorId(user: Users) {
         return await this.prismaService.groups.findMany({
             where: {
-                createBy: id
+                createBy: user.id
             }
         })
     }
@@ -71,7 +71,7 @@ export class GroupService {
         return userGroup.join
     }
 
-    async create(createGroupDto: CreateGroupDto) {
+    async create(createGroupDto: CreateGroupDto, user: Users) {
 
         let alreadyGroup = []
 
@@ -87,8 +87,7 @@ export class GroupService {
                     alreadyGroup.push(user.email)
                 }
             })
-        )
-
+        )            
         if (alreadyGroup.length > 0) {
             throw new HttpException({
                 alreadyGroup: alreadyGroup,
@@ -100,7 +99,7 @@ export class GroupService {
                 topic: createGroupDto.topic,
                 tag: createGroupDto.tag,
                 Users: {
-                    connect: { id: createGroupDto.userId }
+                    connect: { id: user.id }
                 },
             },
             include: {

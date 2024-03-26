@@ -60,7 +60,7 @@ export class AssignmentSubmitController {
         @Request() req
     ) {
         // console.log(files);
-        if (files != undefined && files.length > 0) {
+        if (files != undefined && files.length > 0) {            
             return await this.assignmentSubmitService.createAssignmentSubmit(
                 files,
                 createAssignmentSubmit,
