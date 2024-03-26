@@ -2,7 +2,9 @@ version: "3.8"
 services:
   prod:
     container_name: projectManagementBackend
-    image:  bxdman/ceprojectmanagement
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       - DATABASE_URL
       - GOOGLE_CLIENT_ID
