@@ -45,10 +45,6 @@ jobs:
 
       - name: Build the docker-compose stack
         run: docker compose up -d --build
-      
-      - name: Running Docker Compose
-        run: |
-            docker exec projectManagementBackend npm run prisma:prod
          
       - name: Clear all docker unused cache
         run: docker system prune -af
