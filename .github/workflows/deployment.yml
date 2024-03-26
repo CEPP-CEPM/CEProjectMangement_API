@@ -6,7 +6,13 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
   GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
-
+  MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+  MINIO_CONSOLE: ${{ secrets.MINIO_CONSOLE }}
+  MINIO_PORT: ${{ secrets.MINIO_PORT }}
+  MINIO_ACCESSKEY: ${{ secrets.MINIO_ACCESSKEY }}
+  MINIO_SECRETKEY: ${{ secrets.MINIO_SECRETKEY }}
+  MINIO_SSL: ${{ secrets.MINIO_SSL }}
+  MINIO_BASEBUCKET: ${{ secrets.MINIO_BASEBUCKET }}
 
 jobs:
   lintTest:

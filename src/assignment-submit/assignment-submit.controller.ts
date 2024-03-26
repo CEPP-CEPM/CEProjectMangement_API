@@ -125,7 +125,7 @@ export class AssignmentSubmitController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/advisor/:id')
-  async rejectSubmit(@Param('id') id: string, @Request() req) {
-    return await this.assignmentSubmitService.rejectSubmit(id, req.user);
+  async rejectSubmit(@Param('id') id: string) {
+    return await this.assignmentSubmitService.rejectSubmit(id);
   }
 }

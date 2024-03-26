@@ -1,25 +1,23 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
-import { config } from './config';
 import { BufferedFile } from './file.model';
 import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MinioClientService {
-  private readonly logger: Logger;
-  private readonly baseBucket = config.MINIO_BUCKET;
+  constructor(
+    private readonly minio: MinioService,
+    private readonly configService: ConfigService,
+  ) {}
 
   public get client() {
     return this.minio.client;
   }
 
-  constructor(private readonly minio: MinioService) {
-    this.logger = new Logger('MinioStorageService');
-  }
-
   public async upload(
     file: BufferedFile,
-    baseBucket: string = this.baseBucket,
+    baseBucket: string = this.configService.get<string>('minio.baseBucket'),
   ) {
     if (!file.mimetype.includes('pdf')) {
       throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
@@ -52,14 +50,14 @@ export class MinioClientService {
     );
 
     return {
-      url: `${config.MINIO_ENDPOINT}:${config.MINIO_PORT}/${baseBucket}/${filename}`,
+      url: `${this.configService.get<string>('minio.endpoint')}/${baseBucket}/${filename}`,
       bucketName: baseBucket,
       filename: fileName,
       originalName: file.originalname,
     };
   }
 
-  async delete(objetName: string, baseBucket: string = this.baseBucket) {
+  async delete(objetName: string, baseBucket: string) {
     this.client.removeObject(baseBucket, objetName);
   }
 }

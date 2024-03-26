@@ -15,13 +15,15 @@ export default () => ({
     clientId: process.env.GOOGLE_CLIENT_ID,
     //   callback: process.env.GOOGLE_CALLBACK_URL,
   },
-  // minio: {
-  //   endpoint: process.env.MINIO_ENDPOINT,
-  //   port: parseInt(process.env.MINIO_PORT),
-  //   useSSL: Boolean(process.env.MINIO_SSL),
-  //   accessKey: process.env.MINIO_ACCESSKEY,
-  //   secretKey: process.env.MINIO_SECRETKEY,
-  // },
+  minio: {
+    endpoint: process.env.MINIO_ENDPOINT,
+    port: parseInt(process.env.MINIO_PORT),
+    useSSL: Boolean(process.env.MINIO_SSL),
+    accessKey: process.env.MINIO_ACCESSKEY,
+    secretKey: process.env.MINIO_SECRETKEY,
+    baseBucket: process.env.MINIO_BASEBUCKET,
+    console: process.env.MINIO_CONSOLE,
+  },
   // whitelist: process.env.WHITELIST,
   // node_env: process.env.NODE_ENV,
 });
