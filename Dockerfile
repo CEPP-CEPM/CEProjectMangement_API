@@ -33,7 +33,6 @@ USER node
 
 FROM node:18-alpine As production
 
-RUN apk add --no-cache tzdata
 ENV TZ=Asia/Bangkok
 
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
