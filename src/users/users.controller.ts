@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateUsersDto } from './dto/CreateUsers.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -37,9 +38,9 @@ export class UsersController {
   @Post()
   @UseInterceptors(FileInterceptor('files'))
   async addUsers(
-    @Body() subjectName: string,
+    @Body() createUsersDto: CreateUsersDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.usersService.addUsers(file, subjectName);
+    return await this.usersService.addUsers(file, createUsersDto);
   }
 }

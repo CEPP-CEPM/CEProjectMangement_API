@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Readable } from 'stream';
+import { CreateUsersDto } from './dto/CreateUsers.dto';
 import { parse } from 'papaparse';
 
 @Injectable()
@@ -23,7 +24,9 @@ export class UsersService {
     });
   }
 
-  async addUsers(file: Express.Multer.File, subjectName: string) {
+  async addUsers(file: Express.Multer.File, createUsersDto: CreateUsersDto) {
+    // console.log(2,createUsersDto);
+    
     let header = true;
     const stream = Readable.from(file.buffer);
     const csvData = parse(stream, {
@@ -31,12 +34,11 @@ export class UsersService {
       worker: true,
       delimiter: ',',
       step: async (row) => {
-        console.log('Row: ', row.data);
         if (!header) {
           try {
             const subject = await this.prismaService.subject.findFirst({
               where: {
-                subjectName: subjectName,
+                subjectName: createUsersDto.subjectName,
               },
             });
 
