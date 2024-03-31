@@ -28,13 +28,22 @@ export class GroupService {
     });
   }
 
-  async findByAdvisorId(user: Users) {
+  async findByAdvisor(user: Users) {
     return await this.prismaService.groups.findMany({
       where: {
         createBy: user.id,
       },
     });
   }
+
+  async findByAdvisorId(id: string) {
+    return await this.prismaService.groups.findMany({
+      where: {
+        createBy: id,
+      },
+    });
+  }
+  
 
   async findAdvisorGroupByGroupId(id: string) {
     const group = await this.prismaService.groups.findUnique({

@@ -41,10 +41,13 @@ export class GroupController {
 
   @Get('advisor/1')
   @UseGuards(JwtAuthGuard)
-  async findByAdvisorId(@Request() req) {
-    console.log('test');
+  async findByAdvisor(@Request() req) {
+    return await this.groupService.findByAdvisor(req.user);
+  }
 
-    return await this.groupService.findByAdvisorId(req.user);
+  @Get('proctor/advisor/:advisorId')
+  async findByAdvisorId(@Param('advisorId') advisorId: string) {
+    return await this.groupService.findByAdvisorId(advisorId);
   }
 
   @UseGuards(JwtAuthGuard)
