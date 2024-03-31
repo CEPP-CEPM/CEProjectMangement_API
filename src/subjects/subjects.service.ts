@@ -10,6 +10,14 @@ export class SubjectsService {
     return this.prismaService.subject.findMany();
   }
 
+  async findByUserId(id: string) {
+    return this.prismaService.subject.findFirst({
+      where: {
+        id: id
+      }
+    })
+  }
+
   async createSubject(createSubject: CreateSubjectDto) {
     return this.prismaService.subject.create({
       data: {

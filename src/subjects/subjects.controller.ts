@@ -13,6 +13,11 @@ export class SubjectsController {
     return await this.subjectsService.findAllSubject();
   }
 
+  @Get(':id')
+  async findByUserId(@Param('id') id: string) {
+    return await this.subjectsService.findByUserId(id)
+  }
+
   @Post()
   async createSubject(@Body() createSubjectDto: CreateSubjectDto) {
     return await this.subjectsService.createSubject(createSubjectDto);
